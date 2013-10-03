@@ -254,6 +254,12 @@ namespace openpeer
     }
 
     //-------------------------------------------------------------------------
+    void ILogger::uninstallStdOutLogger()
+    {
+      services::ILogger::uninstallStdOutLogger();
+    }
+      
+    //-------------------------------------------------------------------------
     void ILogger::uninstallFileLogger()
     {
       services::ILogger::uninstallFileLogger();

@@ -120,6 +120,7 @@ namespace openpeer
       //-----------------------------------------------------------------------
       // PURPOSE: Mirror methods to install routines to uninstall various
       //          types of loggers.
+      static void uninstallStdOutLogger();
       static void uninstallFileLogger();
       static void uninstallTelnetLogger();
       static void uninstallOutgoingTelnetLogger();
