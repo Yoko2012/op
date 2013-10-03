@@ -48,7 +48,6 @@ namespace openpeer
 
         enum AttributeTypes
         {
-          AttributeType_Time,
           AttributeType_ErrorCode,
           AttributeType_ErrorReason,
 
@@ -83,9 +82,6 @@ namespace openpeer
 
         bool hasAttribute(AttributeTypes type) const;
 
-        Time time() const                           {return mTime;}
-        void time(Time val)                         {mTime = val;}
-
         ErrorCodeType errorCode() const             {return mErrorCode;}
         void errorCode(WORD val)                    {mErrorCode = val;}
 
@@ -97,7 +93,6 @@ namespace openpeer
       protected:
         MessageResult();
 
-        Time mTime;
         ErrorCodeType mErrorCode;
         String mErrorReason;
 

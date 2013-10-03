@@ -54,7 +54,6 @@ namespace openpeer
 
       //-----------------------------------------------------------------------
       MessageResult::MessageResult() :
-        mTime(zsLib::now()),
         mErrorCode(0),
         mOriginalMethod(Method_Invalid)
       {
@@ -170,8 +169,6 @@ namespace openpeer
       {
         switch (type)
         {
-          case AttributeType_Time:
-            return (Time() != mTime);
           case AttributeType_ErrorCode:
             return (mErrorCode > 0);
           case AttributeType_ErrorReason:

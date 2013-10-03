@@ -66,6 +66,7 @@ namespace openpeer
           String id = IMessageHelper::getAttribute(root, "id");
           String domain = IMessageHelper::getAttribute(root, "domain");
           String appID = IMessageHelper::getAttribute(root, "appid");
+          Time time = IMessageHelper::getAttributeEpoch(root);
 
           if (id.hasData()) {
             pThis->messageID(id);
@@ -75,6 +76,9 @@ namespace openpeer
           }
           if (appID.hasData()) {
             pThis->appID(appID);
+          }
+          if (Time() != time) {
+            pThis->time(time);
           }
           return pThis;
         }

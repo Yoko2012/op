@@ -94,6 +94,9 @@ namespace openpeer
         virtual const String &messageID() const     {return mID;}
         virtual void messageID(const String &id)    {mID = id;}
 
+        Time time() const                           {return mTime;}
+        void time(Time val)                         {mTime = val;}
+
         virtual bool isRequest() const              {return false;}
         virtual bool isResult() const               {return false;}
         virtual bool isNotify() const               {return false;}
@@ -115,6 +118,8 @@ namespace openpeer
         String mDomain;
         String mAppID;
         String mID;
+
+        Time mTime;
       };
     }
   }

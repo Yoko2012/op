@@ -47,7 +47,7 @@ namespace openpeer
         public:
           enum AttributeTypes
           {
-            AttributeType_LocationInfo = AttributeType_Time + 1,
+            AttributeType_LocationInfo = MessageResult::AttributeType_Last + 1,
           };
 
         public:

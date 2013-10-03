@@ -112,15 +112,17 @@ namespace openpeer
           IMessageHelper::setAttribute(rootEl, "appid", appID);
         }
 
+        Time time = message.time();
+        if (Time() != time) {
+          IMessageHelper::setAttributeTimestamp(rootEl, time);
+        }
+
         IMessageHelper::setAttribute(rootEl, "handler", factory->getHandler());
         IMessageHelper::setAttributeID(rootEl, message.messageID());
         IMessageHelper::setAttribute(rootEl, "method", factory->toString(message.method()));
 
         if (message.isResult()) {
           const message::MessageResult *msgResult = (dynamic_cast<const message::MessageResult *>(&message));
-          if (msgResult->hasAttribute(MessageResult::AttributeType_Time)) {
-            IMessageHelper::setAttributeTimestamp(rootEl, msgResult->time());
-          }
           if ((msgResult->hasAttribute(MessageResult::AttributeType_ErrorCode)) ||
               (msgResult->hasAttribute(MessageResult::AttributeType_ErrorReason))) {
 
@@ -328,10 +330,9 @@ namespace openpeer
         if (appID.hasData()) {
           message.appID(appID);
         }
-        if (message.isResult()) {
-          Time time = IMessageHelper::getAttributeEpoch(root);
-          message::MessageResult *result = (dynamic_cast<message::MessageResult *>(&message));
-          result->time(time);
+        Time time = IMessageHelper::getAttributeEpoch(root);
+        if (Time() != time) {
+          message.time(time);
         }
       }
 

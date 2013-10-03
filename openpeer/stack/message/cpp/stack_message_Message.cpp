@@ -88,7 +88,8 @@ namespace openpeer
       //-----------------------------------------------------------------------
       Message::Message() :
         mAppID(IStackForInternal::appID()),
-        mID(IHelper::randomString(32))
+        mID(IHelper::randomString(32)),
+        mTime(zsLib::now())
       {
       }
 
@@ -102,6 +103,7 @@ namespace openpeer
         String domain = message->domain();
         String appID = message->appID();
         String messageID = message->messageID();
+        Time time = message->time();
 
         String handler;
         IMessageFactoryPtr factory = message->factory();
@@ -112,6 +114,8 @@ namespace openpeer
 
         String messageType(messageTypeStr ? String(messageTypeStr) : String());
         String method(methodStr ? String(methodStr) : String());
+
+        String timestamp(Time() != time ? IHelper::timeToString(time) : String());
 
         String errorCode;
         String errorReason;
@@ -129,6 +133,7 @@ namespace openpeer
                Helper::getDebugValue("domain", domain, firstTime) +
                Helper::getDebugValue("appid", appID, firstTime) +
                Helper::getDebugValue("id", messageID, firstTime) +
+               Helper::getDebugValue("time", timestamp, firstTime) +
                Helper::getDebugValue("error code", errorCode, firstTime) +
                Helper::getDebugValue("error reason", errorReason, firstTime);
       }
