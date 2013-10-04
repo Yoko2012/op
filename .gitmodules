@@ -1,18 +1,18 @@
 [submodule "libs/boost"]
 	path = libs/boost
-	url = git@github.com:openpeer/boost.git
+	url = https://github.com/openpeer/boost.git
 [submodule "libs/cryptopp"]
 	path = libs/cryptopp
-	url = git@github.com:openpeer/cryptopp.git
+	url = https://github.com/openpeer/cryptopp.git
 [submodule "libs/curl"]
 	path = libs/curl
-	url = git@github.com:openpeer/curl.git
+	url = https://github.com/openpeer/curl.git
 [submodule "libs/udns"]
 	path = libs/udns
-	url = git@github.com:openpeer/udns.git
+	url = https://github.com/openpeer/udns.git
 [submodule "libs/webrtc"]
 	path = libs/webrtc
-	url = git@github.com:openpeer/webrtc.git
+	url = https://github.com/openpeer/webrtc.git
 [submodule "libs/zsLib"]
 	path = libs/zsLib
-	url = git@github.com:openpeer/zsLib.git
+	url = https://github.com/openpeer/zsLib.git
