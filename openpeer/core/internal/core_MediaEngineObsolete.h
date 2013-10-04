@@ -1,17 +1,17 @@
 /*
- 
+
  Copyright (c) 2013, SMB Phone Inc.
  All rights reserved.
- 
+
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
- 
+
  1. Redistributions of source code must retain the above copyright notice, this
  list of conditions and the following disclaimer.
  2. Redistributions in binary form must reproduce the above copyright notice,
  this list of conditions and the following disclaimer in the documentation
  and/or other materials provided with the distribution.
- 
+
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -22,17 +22,17 @@
  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- 
+
  The views and conclusions contained in the software and documentation are those
  of the authors and should not be interpreted as representing official policies,
  either expressed or implied, of the FreeBSD Project.
- 
+
  */
 
 #pragma once
 
 #include <openpeer/core/internal/types.h>
-#include <openpeer/core/internal/core_MediaStream.h>
+#include <openpeer/core/IMediaEngineObsolete.h>
 
 #include <zsLib/MessageQueueAssociator.h>
 
@@ -64,82 +64,49 @@ namespace openpeer
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
       #pragma mark
-      #pragma mark IMediaEngine
+      #pragma mark IMediaEngineForStackObsolete
       #pragma mark
-      
-      interaction IMediaEngine
+
+      interaction IMediaEngineForStackObsolete
       {
-      public:
-        typedef webrtc::CapturedFrameOrientation CapturedFrameOrientation;
-        typedef webrtc::OutputAudioRoute OutputAudioRoute;
-        typedef webrtc::CallStatistics CallStatistics;
+        IMediaEngineForStackObsolete &forStack() {return *this;}
+        const IMediaEngineForStackObsolete &forStack() const {return *this;}
+
+        static void setup(IMediaEngineDelegateObsoletePtr delegate);
+      };
+
+      //-----------------------------------------------------------------------
+      //-----------------------------------------------------------------------
+      //-----------------------------------------------------------------------
+      //-----------------------------------------------------------------------
+      #pragma mark
+      #pragma mark IMediaEngineForCallTransportObsolete
+      #pragma mark
+
+      interaction IMediaEngineForCallTransportObsolete
+      {
         typedef webrtc::Transport Transport;
 
-        static IMediaEnginePtr singleton();
-        
-        static void setup(IMediaEngineDelegatePtr delegate);
+        IMediaEngineForCallTransportObsolete &forCallTransport() {return *this;}
+        const IMediaEngineForCallTransportObsolete &forCallTransport() const {return *this;}
 
-        virtual void setDefaultVideoOrientation(CapturedFrameOrientation orientation) = 0;
-        virtual CapturedFrameOrientation getDefaultVideoOrientation() = 0;
-        virtual void setRecordVideoOrientation(CapturedFrameOrientation orientation) = 0;
-        virtual CapturedFrameOrientation getRecordVideoOrientation() = 0;
-        virtual void setVideoOrientation() = 0;
-        
-        virtual void setRenderView(int sourceId, void *renderView) = 0;
-        
-        virtual void setEcEnabled(int channelId, bool enabled) = 0;
-        virtual void setAgcEnabled(int channelId, bool enabled) = 0;
-        virtual void setNsEnabled(int channelId, bool enabled) = 0;
-        virtual void setVoiceRecordFile(String fileName) = 0;
-        virtual String getVoiceRecordFile() const = 0;
-        
-        virtual void setMuteEnabled(bool enabled) = 0;
-        virtual bool getMuteEnabled() = 0;
-        virtual void setLoudspeakerEnabled(bool enabled) = 0;
-        virtual bool getLoudspeakerEnabled() = 0;
-        virtual OutputAudioRoute getOutputAudioRoute() = 0;
-        
-        virtual void setContinuousVideoCapture(bool continuousVideoCapture) = 0;
-        virtual bool getContinuousVideoCapture() = 0;
-        
-        virtual void setFaceDetection(int captureId, bool faceDetection) = 0;
-        virtual bool getFaceDetection(int captureId) = 0;
-        
-        virtual uint32_t getCameraType(int captureId) const = 0;
-        virtual void setCameraType(int captureId, uint32_t captureIdx) = 0;
-        
-        virtual void startVideoCapture(int captureId) = 0;
-        virtual void stopVideoCapture(int captureId) = 0;
-        
-        virtual void startSendVideoChannel(int captureId) = 0;
-        virtual void startReceiveVideoChannel(int captureId) = 0;
-        virtual void stopSendVideoChannel(int captureId) = 0;
-        virtual void stopReceiveVideoChannel(int captureId) = 0;
+        static MediaEngineObsoletePtr singleton();
 
-        virtual void startSendVoice(int channelId) = 0;
-        virtual void startReceiveVoice(int channelId) = 0;
-        virtual void stopSendVoice(int channelId) = 0;
-        virtual void stopReceiveVoice(int channelId) = 0;
+        virtual void startVoice() = 0;
+        virtual void stopVoice() = 0;
 
-        virtual void startRecordVideoCapture(int captureId, String fileName, bool saveToLibrary = false) = 0;
-        virtual void stopRecordVideoCapture(int captureId) = 0;
+        virtual int registerVoiceExternalTransport(Transport &transport) = 0;
+        virtual int deregisterVoiceExternalTransport() = 0;
+        virtual int receivedVoiceRTPPacket(const void *data, unsigned int length) = 0;
+        virtual int receivedVoiceRTCPPacket(const void *data, unsigned int length) = 0;
         
-        virtual int getVideoTransportStatistics(int channelId, CallStatistics &stat) = 0;
-        virtual int getVoiceTransportStatistics(int channelId, CallStatistics &stat) = 0;
-        
-        virtual int registerExternalTransport(int channelId, Transport &transport) = 0;
-        virtual int deregisterExternalTransport(int channelId) = 0;
-        virtual int receivedRTPPacket(int channelId, const void *data, unsigned int length) = 0;
-        virtual int receivedRTCPPacket(int channelId, const void *data, unsigned int length) = 0;
-      };
-      
-      interaction IMediaEngineDelegate
-      {
-        typedef IMediaEngine::OutputAudioRoute OutputAudioRoute;
-        
-        virtual void onMediaEngineAudioRouteChanged(OutputAudioRoute audioRoute) = 0;
-        virtual void onMediaEngineFaceDetected(int captureId) = 0;
-        virtual void onMediaEngineVideoCaptureRecordStopped(int captureId) = 0;
+        virtual void startVideoChannel() = 0;
+        virtual void stopVideoChannel() = 0;
+
+        virtual int registerVideoExternalTransport(Transport &transport) = 0;
+        virtual int deregisterVideoExternalTransport() = 0;
+        virtual int receivedVideoRTPPacket(const void *data, const int length) = 0;
+        virtual int receivedVideoRTCPPacket(const void *data, const int length) = 0;
       };
 
       //-----------------------------------------------------------------------
@@ -147,20 +114,25 @@ namespace openpeer
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
       #pragma mark
-      #pragma mark MediaEngine
+      #pragma mark MediaEngineObsolete
       #pragma mark
-      
-      class MediaEngine : public Noop,
+
+      class MediaEngineObsolete : public Noop,
                           public MessageQueueAssociator,
-                          public IMediaEngine,
+                          public IMediaEngineObsolete,
+                          public IMediaEngineForStackObsolete,
+                          public IMediaEngineForCallTransportObsolete,
                           public webrtc::TraceCallback,
                           public webrtc::VoiceEngineObserver,
                           public webrtc::ViECaptureObserver
       {
       public:
-        friend interaction IMediaEngineFactory;
-        friend interaction IMediaEngine;
-        
+        friend interaction IMediaEngineFactoryObsolete;
+        friend interaction IMediaEngineObsolete;
+        friend interaction IMediaEngineForStackObsolete;
+        friend interaction IMediaEngineForCallTransportObsolete;
+
+        typedef webrtc::Transport Transport;
         typedef webrtc::TraceLevel TraceLevel;
         typedef webrtc::VoiceEngine VoiceEngine;
         typedef webrtc::VoEBase VoiceBase;
@@ -182,45 +154,46 @@ namespace openpeer
         typedef webrtc::ViERTP_RTCP VideoRtpRtcp;
         typedef webrtc::ViECodec VideoCodec;
         typedef webrtc::ViEFile VideoFile;
-        
+
       protected:
-        MediaEngine(
+
+        MediaEngineObsolete(
                     IMessageQueuePtr queue,
-                    IMediaEngineDelegatePtr delegate
+                    IMediaEngineDelegateObsoletePtr delegate
                     );
         
-        MediaEngine(Noop);
-        
-        void init();
-        
-        static MediaEnginePtr create(IMediaEngineDelegatePtr delegate);
+        MediaEngineObsolete(Noop);
 
+        void init();
+
+        static MediaEngineObsoletePtr create(IMediaEngineDelegateObsoletePtr delegate);
+        
         void destroyMediaEngine();
-        
+        virtual void setLogLevel();
+
       public:
-        ~MediaEngine();
-        
+        ~MediaEngineObsolete();
+
       protected:
         //---------------------------------------------------------------------
         #pragma mark
-        #pragma mark MediaEngine => IMediaEngine
+        #pragma mark MediaEngineObsolete => IMediaEngine
         #pragma mark
-        
-        static MediaEnginePtr singleton(IMediaEngineDelegatePtr delegate = IMediaEngineDelegatePtr());
-        
-        static void setup(IMediaEngineDelegatePtr delegate);
 
-        virtual void setDefaultVideoOrientation(CapturedFrameOrientation orientation);
-        virtual CapturedFrameOrientation getDefaultVideoOrientation();
-        virtual void setRecordVideoOrientation(CapturedFrameOrientation orientation);
-        virtual CapturedFrameOrientation getRecordVideoOrientation();
+        static MediaEngineObsoletePtr singleton(IMediaEngineDelegateObsoletePtr delegate = IMediaEngineDelegateObsoletePtr());
+
+        virtual void setDefaultVideoOrientation(VideoOrientations orientation);
+        virtual VideoOrientations getDefaultVideoOrientation();
+        virtual void setRecordVideoOrientation(VideoOrientations orientation);
+        virtual VideoOrientations getRecordVideoOrientation();
         virtual void setVideoOrientation();
-        
-        virtual void setRenderView(int sourceId, void *renderView);
-        
-        virtual void setEcEnabled(int channelId, bool enabled);
-        virtual void setAgcEnabled(int channelId, bool enabled);
-        virtual void setNsEnabled(int channelId, bool enabled);
+
+        virtual void setCaptureRenderView(void *renderView);
+        virtual void setChannelRenderView(void *renderView);
+
+        virtual void setEcEnabled(bool enabled);
+        virtual void setAgcEnabled(bool enabled);
+        virtual void setNsEnabled(bool enabled);
         virtual void setVoiceRecordFile(String fileName);
         virtual String getVoiceRecordFile() const;
 
@@ -228,98 +201,105 @@ namespace openpeer
         virtual bool getMuteEnabled();
         virtual void setLoudspeakerEnabled(bool enabled);
         virtual bool getLoudspeakerEnabled();
-        virtual OutputAudioRoute getOutputAudioRoute();
+        virtual OutputAudioRoutes getOutputAudioRoute();
         
         virtual void setContinuousVideoCapture(bool continuousVideoCapture);
         virtual bool getContinuousVideoCapture();
         
-        virtual void setFaceDetection(int captureId, bool faceDetection);
-        virtual bool getFaceDetection(int captureId);
-        
-        virtual uint32_t getCameraType(int captureId) const;
-        virtual void setCameraType(int captureId, uint32_t captureIdx);
-        
-        virtual void startVideoCapture(int captureId);
-        virtual void stopVideoCapture(int captureId);
-        
-        virtual void startSendVideoChannel(int channelId);
-        virtual void startReceiveVideoChannel(int channelId);
-        virtual void stopSendVideoChannel(int channelId);
-        virtual void stopReceiveVideoChannel(int channelId);
-        
-        virtual void startSendVoice(int channelId);
-        virtual void startReceiveVoice(int channelId);
-        virtual void stopSendVoice(int channelId);
-        virtual void stopReceiveVoice(int channelId);
+        virtual void setFaceDetection(bool faceDetection);
+        virtual bool getFaceDetection();
 
-        virtual void startRecordVideoCapture(int captureId, String fileName, bool saveToLibrary = false);
-        virtual void stopRecordVideoCapture(int captureId);
+        virtual CameraTypes getCameraType() const;
+        virtual void setCameraType(CameraTypes type);
         
-        virtual int getVideoTransportStatistics(int channelId, CallStatistics &stat);
-        virtual int getVoiceTransportStatistics(int channelId, CallStatistics &stat);
+        virtual void startVideoCapture();
+        virtual void stopVideoCapture();
         
-        virtual int registerExternalTransport(int channelId, Transport &transport);
-        virtual int deregisterExternalTransport(int channelId);
-        virtual int receivedRTPPacket(int channelId, const void *data, unsigned int length);
-        virtual int receivedRTCPPacket(int channelId, const void *data, unsigned int length);
+        virtual void startRecordVideoCapture(String fileName, bool saveToLibrary = false);
+        virtual void stopRecordVideoCapture();
+
+        virtual int getVideoTransportStatistics(RtpRtcpStatistics &stat);
+        virtual int getVoiceTransportStatistics(RtpRtcpStatistics &stat);
 
         //---------------------------------------------------------------------
         #pragma mark
-        #pragma mark MediaEngine => TraceCallback
+        #pragma mark MediaEngineObsolete => IMediaEngineForStack
         #pragma mark
+
+        static void setup(IMediaEngineDelegateObsoletePtr delegate);
+
+        //---------------------------------------------------------------------
+        #pragma mark
+        #pragma mark MediaEngineObsolete => IMediaEngineForCallTransport
+        #pragma mark
+
+        virtual void startVoice();
+        virtual void stopVoice();
         
+        virtual void startVideoChannel();
+        virtual void stopVideoChannel();
+
+        virtual int registerVoiceExternalTransport(Transport &transport);
+        virtual int deregisterVoiceExternalTransport();
+        virtual int receivedVoiceRTPPacket(const void *data, unsigned int length);
+        virtual int receivedVoiceRTCPPacket(const void *data, unsigned int length);
+
+        virtual int registerVideoExternalTransport(Transport &transport);
+        virtual int deregisterVideoExternalTransport();
+        virtual int receivedVideoRTPPacket(const void *data, const int length);
+        virtual int receivedVideoRTCPPacket(const void *data, const int length);
+
+        //---------------------------------------------------------------------
+        #pragma mark
+        #pragma mark MediaEngineObsolete => TraceCallback
+        #pragma mark
+
         virtual void Print(const TraceLevel level, const char *traceString, const int length);
-        
+
         //---------------------------------------------------------------------
         #pragma mark
-        #pragma mark MediaEngine => VoiceEngineObserver
+        #pragma mark MediaEngineObsolete => VoiceEngineObserver
         #pragma mark
-        
+
         void CallbackOnError(const int errCode, const int channel);
         void CallbackOnOutputAudioRouteChange(const OutputAudioRoute route);
         
         //-----------------------------------------------------------------------
         #pragma mark
-        #pragma mark MediaEngine => ViECaptureObserver
+        #pragma mark MediaEngineObsolete => ViECaptureObserver
         #pragma mark
         
         void BrightnessAlarm(const int capture_id, const webrtc::Brightness brightness);
         void CapturedFrameRate(const int capture_id, const unsigned char frame_rate);
         void NoPictureAlarm(const int capture_id, const webrtc::CaptureAlarm alarm);
         void FaceDetected(const int capture_id);
-        
+
         //---------------------------------------------------------------------
         #pragma mark
-        #pragma mark MediaEngine => (internal)
+        #pragma mark MediaEngineObsolete => (internal)
         #pragma mark
-        
+
       public:
         void operator()();
-        
+
       protected:
-        virtual void internalStartSendVoice();
-        virtual void internalStartReceiveVoice();
-        virtual void internalStopSendVoice();
-        virtual void internalStopReceiveVoice();
+        virtual void internalStartVoice();
+        virtual void internalStopVoice();
         
+        virtual int registerVoiceTransport();
+        virtual int setVoiceTransportParameters();
+
         virtual void internalStartVideoCapture();
         virtual void internalStopVideoCapture();
-        virtual void internalStartSendVideoChannel();
-        virtual void internalStartReceiveVideoChannel();
-        virtual void internalStopSendVideoChannel();
-        virtual void internalStopReceiveVideoChannel();
+        virtual void internalStartVideoChannel();
+        virtual void internalStopVideoChannel();
         virtual void internalStartRecordVideoCapture(String videoRecordFile, bool saveVideoToLibrary);
         virtual void internalStopRecordVideoCapture();
-        
-        virtual int registerVoiceSendTransport();
-        virtual int deregisterVoiceSendTransport();
-        virtual int setVoiceSendTransportParameters();
-        virtual int setVoiceReceiveTransportParameters();
-        virtual int registerVideoSendTransport();
-        virtual int deregisterVideoSendTransport();
-        virtual int setVideoSendTransportParameters();
-        virtual int setVideoReceiveTransportParameters();
-        
+
+        virtual int registerVideoTransport();
+        virtual int deregisterVideoTransport();
+        virtual int setVideoTransportParameters();
+
       protected:
         int getVideoCaptureParameters(webrtc::RotateCapturedFrame orientation, int& width, int& height,
                                       int& maxFramerate, int& maxBitrate);
@@ -329,76 +309,75 @@ namespace openpeer
 
       private:
         String log(const char *message) const;
-        
+
       protected:
         //---------------------------------------------------------------------
         //---------------------------------------------------------------------
         //---------------------------------------------------------------------
         //---------------------------------------------------------------------
         #pragma mark
-        #pragma mark MediaEngine::RedirectTransport
+        #pragma mark MediaEngineObsolete::RedirectTransport
         #pragma mark
-        
+
         class RedirectTransport : public Transport
         {
         public:
           RedirectTransport(const char *transportType);
-          
+
           //-------------------------------------------------------------------
           #pragma mark
-          #pragma mark MediaEngine::RedirectTransport => webrtc::Transport
+          #pragma mark MediaEngineObsolete::RedirectTransport => webrtc::Transport
           #pragma mark
-          
+
           virtual int SendPacket(int channel, const void *data, int len);
           virtual int SendRTCPPacket(int channel, const void *data, int len);
-          
+
           //-------------------------------------------------------------------
           #pragma mark
-          #pragma mark MediaEngine::RedirectTransport => friend MediaEngine
+          #pragma mark MediaEngineObsolete::RedirectTransport => friend MediaEngineObsolete
           #pragma mark
-          
+
           void redirect(Transport *transport);
-          
+
         protected:
           //-------------------------------------------------------------------
           #pragma mark
-          #pragma mark MediaEngine::RedirectTransport => (internal)
+          #pragma mark MediaEngineObsolete::RedirectTransport => (internal)
           #pragma mark
-          
+
           String log(const char *message);
-          
+
         private:
           PUID mID;
           mutable RecursiveLock mLock;
-          
+
           const char *mTransportType;
-          
+
           Transport *mTransport;
         };
-        
 
+      protected:
         //---------------------------------------------------------------------
         #pragma mark
-        #pragma mark MediaEngine => (data)
+        #pragma mark MediaEngineObsolete => (data)
         #pragma mark
-        
-      protected:
+
         PUID mID;
         mutable RecursiveLock mLock;
-        MediaEngineWeakPtr mThisWeak;
-        IMediaEngineDelegatePtr mDelegate;
-        
+        MediaEngineObsoleteWeakPtr mThisWeak;
+        IMediaEngineDelegateObsoletePtr mDelegate;
+
         int mError;
         unsigned int mMtu;
         String mMachineName;
-        
+
         bool mEcEnabled;
         bool mAgcEnabled;
         bool mNsEnabled;
         String mVoiceRecordFile;
-        CapturedFrameOrientation mDefaultVideoOrientation;
-        CapturedFrameOrientation mRecordVideoOrientation;
-        
+        VideoOrientations mDefaultVideoOrientation;
+        VideoOrientations mRecordVideoOrientation;
+
         int mVoiceChannel;
         Transport *mVoiceTransport;
         VoiceEngine *mVoiceEngine;
@@ -412,12 +391,12 @@ namespace openpeer
         VoiceFile *mVoiceFile;
         bool mVoiceEngineReady;
         bool mFaceDetection;
-        
+
         int mVideoChannel;
         Transport *mVideoTransport;
         int mCaptureId;
         char mDeviceUniqueId[512];
-        uint32_t mCaptureIdx;
+        CameraTypes mCameraType;
         VideoCaptureModule *mVcpm;
         VideoEngine *mVideoEngine;
         VideoBase *mVideoBase;
@@ -430,25 +409,25 @@ namespace openpeer
         void *mCaptureRenderView;
         void *mChannelRenderView;
         bool mVideoEngineReady;
-        
+
         RedirectTransport mRedirectVoiceTransport;
         RedirectTransport mRedirectVideoTransport;
-        
+
         // lifetime start / stop state
         mutable RecursiveLock mLifetimeLock;
-        
+
         bool mLifetimeWantAudio;
         bool mLifetimeWantVideoCapture;
         bool mLifetimeWantVideoChannel;
         bool mLifetimeWantRecordVideoCapture;
-        
+
         bool mLifetimeHasAudio;
         bool mLifetimeHasVideoCapture;
         bool mLifetimeHasVideoChannel;
         bool mLifetimeHasRecordVideoCapture;
-        
+
         bool mLifetimeInProgress;
-        uint32_t mLifetimeWantCaptureIdx;
+        CameraTypes mLifetimeWantCameraType;
         bool mLifetimeContinuousVideoCapture;
         
         String mLifetimeVideoRecordFile;
@@ -465,19 +444,12 @@ namespace openpeer
       #pragma mark IMediaEngineFactory
       #pragma mark
       
-      interaction IMediaEngineFactory
+      interaction IMediaEngineFactoryObsolete
       {
-        static IMediaEngineFactory &singleton();
+        static IMediaEngineFactoryObsolete &singleton();
         
-        virtual MediaEnginePtr createMediaEngine(IMediaEngineDelegatePtr delegate);
+        virtual MediaEngineObsoletePtr createMediaEngine(IMediaEngineDelegateObsoletePtr delegate);
       };
     }
   }
 }
-
-ZS_DECLARE_PROXY_BEGIN(openpeer::core::internal::IMediaEngineDelegate)
-ZS_DECLARE_PROXY_TYPEDEF(openpeer::core::internal::IMediaEngine::OutputAudioRoute, OutputAudioRoute)
-ZS_DECLARE_PROXY_METHOD_1(onMediaEngineAudioRouteChanged, OutputAudioRoute)
-ZS_DECLARE_PROXY_METHOD_1(onMediaEngineFaceDetected, int)
-ZS_DECLARE_PROXY_METHOD_1(onMediaEngineVideoCaptureRecordStopped, int)
-ZS_DECLARE_PROXY_END()

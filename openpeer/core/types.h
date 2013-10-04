@@ -231,15 +231,24 @@ namespace openpeer
     typedef boost::shared_ptr<IIdentityLookupDelegate> IIdentityLookupDelegatePtr;
     typedef boost::weak_ptr<IIdentityLookupDelegate> IIdentityLookupDelegateWeakPtr;
     typedef zsLib::Proxy<IIdentityLookupDelegate> IIdentityLookupDelegateProxy;
+    
+    interaction IMediaManager;
+    typedef boost::shared_ptr<IMediaManager> IMediaManagerPtr;
+    typedef boost::weak_ptr<IMediaManager> IMediaManagerWeakPtr;
 
-    interaction IMediaEngine;
-    typedef boost::shared_ptr<IMediaEngine> IMediaEnginePtr;
-    typedef boost::weak_ptr<IMediaEngine> IMediaEngineWeakPtr;
-
-    interaction IMediaEngineDelegate;
-    typedef boost::shared_ptr<IMediaEngineDelegate> IMediaEngineDelegatePtr;
-    typedef boost::weak_ptr<IMediaEngineDelegate> IMediaEngineDelegateWeakPtr;
-    typedef zsLib::Proxy<IMediaEngineDelegate> IMediaEngineDelegateProxy;
+    interaction IMediaManagerDelegate;
+    typedef boost::shared_ptr<IMediaManagerDelegate> IMediaManagerDelegatePtr;
+    typedef boost::weak_ptr<IMediaManagerDelegate> IMediaManagerDelegateWeakPtr;
+    typedef zsLib::Proxy<IMediaManagerDelegate> IMediaManagerDelegateProxy;
+    
+    interaction IMediaEngineObsolete;
+    typedef boost::shared_ptr<IMediaEngineObsolete> IMediaEngineObsoletePtr;
+    typedef boost::weak_ptr<IMediaEngineObsolete> IMediaEngineObsoleteWeakPtr;
+    
+    interaction IMediaEngineDelegateObsolete;
+    typedef boost::shared_ptr<IMediaEngineDelegateObsolete> IMediaEngineDelegateObsoletePtr;
+    typedef boost::weak_ptr<IMediaEngineDelegateObsolete> IMediaEngineDelegateObsoleteWeakPtr;
+    typedef zsLib::Proxy<IMediaEngineDelegateObsolete> IMediaEngineDelegateObsoleteProxy;
 
     interaction IStack;
     typedef boost::shared_ptr<IStack> IStackPtr;

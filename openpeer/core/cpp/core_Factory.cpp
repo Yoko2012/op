@@ -406,6 +406,12 @@ namespace openpeer
       #pragma mark
       #pragma mark IMediaEngineFactory
       #pragma mark
+      
+      //-----------------------------------------------------------------------
+      IMediaEngineFactoryObsolete &IMediaEngineFactoryObsolete::singleton()
+      {
+        return *(Factory::singleton().get());
+      }
 
       //-----------------------------------------------------------------------
       IMediaEngineFactory &IMediaEngineFactory::singleton()
@@ -413,6 +419,12 @@ namespace openpeer
         return *(Factory::singleton().get());
       }
 
+      //-----------------------------------------------------------------------
+      MediaEngineObsoletePtr IMediaEngineFactoryObsolete::createMediaEngine(IMediaEngineDelegateObsoletePtr delegate)
+      {
+        return MediaEngineObsolete::create(delegate);
+      }
+      
       //-----------------------------------------------------------------------
       MediaEnginePtr IMediaEngineFactory::createMediaEngine(IMediaEngineDelegatePtr delegate)
       {

@@ -46,4 +46,5 @@
 #include <openpeer/core/internal/core_IdentityLookup.h>
 #include <openpeer/core/internal/core_Logger.h>
 #include <openpeer/core/internal/core_MediaEngine.h>
+#include <openpeer/core/internal/core_MediaEngineObsolete.h>
 #include <openpeer/core/internal/core_Stack.h>

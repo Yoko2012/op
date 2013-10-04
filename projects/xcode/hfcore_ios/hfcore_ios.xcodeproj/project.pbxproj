@@ -25,6 +25,10 @@
 		0063C12416CA9B6A00E6DB4D /* core_Logger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0063BF6616CA9B6900E6DB4D /* core_Logger.cpp */; };
 		0063C12516CA9B6A00E6DB4D /* core_MediaEngine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0063BF6716CA9B6900E6DB4D /* core_MediaEngine.cpp */; };
 		0063C12616CA9B6A00E6DB4D /* core_Stack.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0063BF6816CA9B6900E6DB4D /* core_Stack.cpp */; };
+		E2E2476017FEEC71002E6535 /* core_MediaEngineObsolete.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E2E2475C17FEEC71002E6535 /* core_MediaEngineObsolete.cpp */; };
+		E2E2476117FEEC71002E6535 /* core_MediaManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E2E2475D17FEEC71002E6535 /* core_MediaManager.cpp */; };
+		E2E2476217FEEC71002E6535 /* core_MediaSession.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E2E2475E17FEEC71002E6535 /* core_MediaSession.cpp */; };
+		E2E2476317FEEC71002E6535 /* core_MediaStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E2E2475F17FEEC71002E6535 /* core_MediaStream.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -70,7 +74,6 @@
 		0063BF6F16CA9B6900E6DB4D /* IIdentity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IIdentity.h; sourceTree = "<group>"; };
 		0063BF7016CA9B6900E6DB4D /* IIdentityLookup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IIdentityLookup.h; sourceTree = "<group>"; };
 		0063BF7116CA9B6900E6DB4D /* ILogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ILogger.h; sourceTree = "<group>"; };
-		0063BF7216CA9B6900E6DB4D /* IMediaEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMediaEngine.h; sourceTree = "<group>"; };
 		0063BF7416CA9B6900E6DB4D /* core.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = core.h; sourceTree = "<group>"; };
 		0063BF7516CA9B6900E6DB4D /* core_Account.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = core_Account.h; sourceTree = "<group>"; };
 		0063BF7616CA9B6900E6DB4D /* core_Call.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = core_Call.h; sourceTree = "<group>"; };
@@ -91,6 +94,16 @@
 		0063BF8616CA9B6900E6DB4D /* types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = types.h; sourceTree = "<group>"; };
 		0063BF8716CA9B6900E6DB4D /* IStack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IStack.h; sourceTree = "<group>"; };
 		0063BF8F16CA9B6900E6DB4D /* types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = types.h; sourceTree = "<group>"; };
+		E2E2475617FEEC13002E6535 /* IMediaEngineObsolete.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMediaEngineObsolete.h; sourceTree = "<group>"; };
+		E2E2475717FEEC13002E6535 /* IMediaManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMediaManager.h; sourceTree = "<group>"; };
+		E2E2475817FEEC2E002E6535 /* core_MediaEngineObsolete.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = core_MediaEngineObsolete.h; sourceTree = "<group>"; };
+		E2E2475917FEEC2E002E6535 /* core_MediaManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = core_MediaManager.h; sourceTree = "<group>"; };
+		E2E2475A17FEEC2E002E6535 /* core_MediaSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = core_MediaSession.h; sourceTree = "<group>"; };
+		E2E2475B17FEEC2E002E6535 /* core_MediaStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = core_MediaStream.h; sourceTree = "<group>"; };
+		E2E2475C17FEEC71002E6535 /* core_MediaEngineObsolete.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = core_MediaEngineObsolete.cpp; sourceTree = "<group>"; };
+		E2E2475D17FEEC71002E6535 /* core_MediaManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = core_MediaManager.cpp; sourceTree = "<group>"; };
+		E2E2475E17FEEC71002E6535 /* core_MediaSession.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = core_MediaSession.cpp; sourceTree = "<group>"; };
+		E2E2475F17FEEC71002E6535 /* core_MediaStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = core_MediaStream.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -145,7 +158,8 @@
 				0063BF6F16CA9B6900E6DB4D /* IIdentity.h */,
 				0063BF7016CA9B6900E6DB4D /* IIdentityLookup.h */,
 				0063BF7116CA9B6900E6DB4D /* ILogger.h */,
-				0063BF7216CA9B6900E6DB4D /* IMediaEngine.h */,
+				E2E2475617FEEC13002E6535 /* IMediaEngineObsolete.h */,
+				E2E2475717FEEC13002E6535 /* IMediaManager.h */,
 				0063BF8716CA9B6900E6DB4D /* IStack.h */,
 			);
 			path = core;
@@ -171,6 +185,10 @@
 				0063BF6516CA9B6900E6DB4D /* core_IdentityLookup.cpp */,
 				0063BF6616CA9B6900E6DB4D /* core_Logger.cpp */,
 				0063BF6716CA9B6900E6DB4D /* core_MediaEngine.cpp */,
+				E2E2475C17FEEC71002E6535 /* core_MediaEngineObsolete.cpp */,
+				E2E2475D17FEEC71002E6535 /* core_MediaManager.cpp */,
+				E2E2475E17FEEC71002E6535 /* core_MediaSession.cpp */,
+				E2E2475F17FEEC71002E6535 /* core_MediaStream.cpp */,
 				0063BF6816CA9B6900E6DB4D /* core_Stack.cpp */,
 			);
 			path = cpp;
@@ -197,6 +215,10 @@
 				0063BF8216CA9B6900E6DB4D /* core_IdentityLookup.h */,
 				0063BF8316CA9B6900E6DB4D /* core_Logger.h */,
 				0063BF8416CA9B6900E6DB4D /* core_MediaEngine.h */,
+				E2E2475817FEEC2E002E6535 /* core_MediaEngineObsolete.h */,
+				E2E2475917FEEC2E002E6535 /* core_MediaManager.h */,
+				E2E2475A17FEEC2E002E6535 /* core_MediaSession.h */,
+				E2E2475B17FEEC2E002E6535 /* core_MediaStream.h */,
 				0063BF8516CA9B6900E6DB4D /* core_Stack.h */,
 			);
 			path = internal;
@@ -271,6 +293,10 @@
 				0063C12516CA9B6A00E6DB4D /* core_MediaEngine.cpp in Sources */,
 				0063C12616CA9B6A00E6DB4D /* core_Stack.cpp in Sources */,
 				005F60B61756B7DB00BC3DD6 /* core_Cache.cpp in Sources */,
+				E2E2476017FEEC71002E6535 /* core_MediaEngineObsolete.cpp in Sources */,
+				E2E2476117FEEC71002E6535 /* core_MediaManager.cpp in Sources */,
+				E2E2476217FEEC71002E6535 /* core_MediaSession.cpp in Sources */,
+				E2E2476317FEEC71002E6535 /* core_MediaStream.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

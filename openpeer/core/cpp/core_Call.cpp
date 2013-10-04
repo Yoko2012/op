@@ -35,6 +35,7 @@
 #include <openpeer/core/internal/core_Account.h>
 #include <openpeer/core/internal/core_Contact.h>
 #include <openpeer/core/internal/core_Helper.h>
+#include <openpeer/core/internal/core_MediaStream.h>
 
 #include <openpeer/stack/IHelper.h>
 
@@ -326,6 +327,30 @@ namespace openpeer
       bool Call::hasVideo() const
       {
         return mHasVideo;
+      }
+
+      //-----------------------------------------------------------------------
+      MediaSessionList Call::getReceiveMediaSessions()
+      {
+        return MediaSessionList();
+      }
+      
+      //-----------------------------------------------------------------------
+      MediaSessionList Call::getSendMediaSessions()
+      {
+        return MediaSessionList();
+      }
+
+      //-----------------------------------------------------------------------
+      void Call::addMediaSession(IMediaSessionPtr session, bool mergeAudioStreams)
+      {
+        
+      }
+      
+      //-----------------------------------------------------------------------
+      void Call::removeMediaSession(IMediaSessionPtr session)
+      {
+        
       }
 
       //-----------------------------------------------------------------------

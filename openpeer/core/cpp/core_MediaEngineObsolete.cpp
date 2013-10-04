@@ -29,7 +29,7 @@
  
  */
 
-#include <openpeer/core/internal/core_MediaEngine.h>
+#include <openpeer/core/internal/core_MediaEngineObsolete.h>
 #include <openpeer/core/internal/core_Stack.h>
 #include <openpeer/core/internal/core_IConversationThreadParser.h>
 #include <openpeer/core/ILogger.h>
@@ -53,7 +53,7 @@
 #define OPENPEER_MEDIA_ENGINE_INVALID_CHANNEL (-1)
 #define OPENPEER_MEDIA_ENGINE_MTU (576)
 
-namespace openpeer { namespace core { ZS_DECLARE_SUBSYSTEM(openpeer_webrtc) } }
+namespace openpeer { namespace core { ZS_DECLARE_SUBSYSTEM(openpeer_webrtc_obsolete) } }
 
 namespace openpeer
 {
@@ -64,75 +64,103 @@ namespace openpeer
     namespace internal
     {
       typedef zsLib::ThreadPtr ThreadPtr;
-
-      //-----------------------------------------------------------------------
-      //-----------------------------------------------------------------------
-      //-----------------------------------------------------------------------
-      //-----------------------------------------------------------------------
-      #pragma mark
-      #pragma mark MediaEngine
-      #pragma mark
       
       //-----------------------------------------------------------------------
-      MediaEngine::MediaEngine(
+      //-----------------------------------------------------------------------
+      //-----------------------------------------------------------------------
+      //-----------------------------------------------------------------------
+#pragma mark
+#pragma mark IMediaEngineForStack
+#pragma mark
+      
+      //-----------------------------------------------------------------------
+      void IMediaEngineForStackObsolete::setup(IMediaEngineDelegateObsoletePtr delegate)
+      {
+        MediaEngineObsolete::setup(delegate);
+      }
+      
+      //-----------------------------------------------------------------------
+      //-----------------------------------------------------------------------
+      //-----------------------------------------------------------------------
+      //-----------------------------------------------------------------------
+#pragma mark
+#pragma mark IMediaEngineForCallTransport
+#pragma mark
+      
+      //-----------------------------------------------------------------------
+      MediaEngineObsoletePtr IMediaEngineForCallTransportObsolete::singleton()
+      {
+        return MediaEngineObsolete::singleton();
+      }
+      
+      //-----------------------------------------------------------------------
+      //-----------------------------------------------------------------------
+      //-----------------------------------------------------------------------
+      //-----------------------------------------------------------------------
+#pragma mark
+#pragma mark MediaEngineObsolete
+#pragma mark
+      
+      //-----------------------------------------------------------------------
+      MediaEngineObsolete::MediaEngineObsolete(
                                IMessageQueuePtr queue,
-                               IMediaEngineDelegatePtr delegate
+                               IMediaEngineDelegateObsoletePtr delegate
                                ) :
-        MessageQueueAssociator(queue),
-        mError(0),
-        mMtu(OPENPEER_MEDIA_ENGINE_MTU),
-        mID(zsLib::createPUID()),
-        mDelegate(IMediaEngineDelegateProxy::createWeak(delegate)),
-        mEcEnabled(false),
-        mAgcEnabled(false),
-        mNsEnabled(false),
-        mVoiceRecordFile(""),
-        mDefaultVideoOrientation(webrtc::CapturedFrameOrientation_LandscapeLeft),
-        mRecordVideoOrientation(webrtc::CapturedFrameOrientation_LandscapeLeft),
-        mVoiceChannel(OPENPEER_MEDIA_ENGINE_INVALID_CHANNEL),
-        mVoiceTransport(&mRedirectVoiceTransport),
-        mVideoChannel(OPENPEER_MEDIA_ENGINE_INVALID_CHANNEL),
-        mVideoTransport(&mRedirectVideoTransport),
-        mCaptureId(0),
-        mCaptureIdx(0),
-        mVoiceEngine(NULL),
-        mVoiceBase(NULL),
-        mVoiceCodec(NULL),
-        mVoiceNetwork(NULL),
-        mVoiceRtpRtcp(NULL),
-        mVoiceAudioProcessing(NULL),
-        mVoiceVolumeControl(NULL),
-        mVoiceHardware(NULL),
-        mVoiceFile(NULL),
-        mVoiceEngineReady(false),
-        mVcpm(NULL),
-        mVideoEngine(NULL),
-        mVideoBase(NULL),
-        mVideoNetwork(NULL),
-        mVideoRender(NULL),
-        mVideoCapture(NULL),
-        mVideoRtpRtcp(NULL),
-        mVideoCodec(NULL),
-        mVideoFile(NULL),
-        mVideoEngineReady(false),
-        mFaceDetection(false),
-        mCaptureRenderView(NULL),
-        mChannelRenderView(NULL),
-        mRedirectVoiceTransport("voice"),
-        mRedirectVideoTransport("video"),
-        mLifetimeWantAudio(false),
-        mLifetimeWantVideoCapture(false),
-        mLifetimeWantVideoChannel(false),
-        mLifetimeWantRecordVideoCapture(false),
-        mLifetimeHasAudio(false),
-        mLifetimeHasVideoCapture(false),
-        mLifetimeHasVideoChannel(false),
-        mLifetimeHasRecordVideoCapture(false),
-        mLifetimeInProgress(false),
-        mLifetimeWantCaptureIdx(0),
-        mLifetimeContinuousVideoCapture(false),
-        mLifetimeVideoRecordFile(""),
-        mLifetimeSaveVideoToLibrary(false)
+      MessageQueueAssociator(queue),
+      mError(0),
+      mMtu(OPENPEER_MEDIA_ENGINE_MTU),
+      mID(zsLib::createPUID()),
+      mDelegate(IMediaEngineDelegateObsoleteProxy::createWeak(delegate)),
+      mEcEnabled(false),
+      mAgcEnabled(false),
+      mNsEnabled(false),
+      mVoiceRecordFile(""),
+      mDefaultVideoOrientation(IMediaEngineObsolete::VideoOrientation_LandscapeLeft),
+      mRecordVideoOrientation(IMediaEngineObsolete::VideoOrientation_LandscapeLeft),
+      mVoiceChannel(OPENPEER_MEDIA_ENGINE_INVALID_CHANNEL),
+      mVoiceTransport(&mRedirectVoiceTransport),
+      mVideoChannel(OPENPEER_MEDIA_ENGINE_INVALID_CHANNEL),
+      mVideoTransport(&mRedirectVideoTransport),
+      mCaptureId(0),
+      mCameraType(CameraType_Front),
+      mVoiceEngine(NULL),
+      mVoiceBase(NULL),
+      mVoiceCodec(NULL),
+      mVoiceNetwork(NULL),
+      mVoiceRtpRtcp(NULL),
+      mVoiceAudioProcessing(NULL),
+      mVoiceVolumeControl(NULL),
+      mVoiceHardware(NULL),
+      mVoiceFile(NULL),
+      mVoiceEngineReady(false),
+      mVcpm(NULL),
+      mVideoEngine(NULL),
+      mVideoBase(NULL),
+      mVideoNetwork(NULL),
+      mVideoRender(NULL),
+      mVideoCapture(NULL),
+      mVideoRtpRtcp(NULL),
+      mVideoCodec(NULL),
+      mVideoFile(NULL),
+      mVideoEngineReady(false),
+      mFaceDetection(false),
+      mCaptureRenderView(NULL),
+      mChannelRenderView(NULL),
+      mRedirectVoiceTransport("voice"),
+      mRedirectVideoTransport("video"),
+      mLifetimeWantAudio(false),
+      mLifetimeWantVideoCapture(false),
+      mLifetimeWantVideoChannel(false),
+      mLifetimeWantRecordVideoCapture(false),
+      mLifetimeHasAudio(false),
+      mLifetimeHasVideoCapture(false),
+      mLifetimeHasVideoChannel(false),
+      mLifetimeHasRecordVideoCapture(false),
+      mLifetimeInProgress(false),
+      mLifetimeWantCameraType(CameraType_Front),
+      mLifetimeContinuousVideoCapture(false),
+      mLifetimeVideoRecordFile(""),
+      mLifetimeSaveVideoToLibrary(false)
       {
 #ifdef TARGET_OS_IPHONE
         int name[] = {CTL_HW, HW_MACHINE};
@@ -145,62 +173,62 @@ namespace openpeer
 #endif
       }
       
-      MediaEngine::MediaEngine(Noop) :
-        Noop(true),
-        MessageQueueAssociator(IMessageQueuePtr()),
-        mError(0),
-        mMtu(OPENPEER_MEDIA_ENGINE_MTU),
-        mID(zsLib::createPUID()),
-        mEcEnabled(false),
-        mAgcEnabled(false),
-        mNsEnabled(false),
-        mVoiceRecordFile(""),
-        mDefaultVideoOrientation(webrtc::CapturedFrameOrientation_LandscapeLeft),
-        mRecordVideoOrientation(webrtc::CapturedFrameOrientation_LandscapeLeft),
-        mVoiceChannel(OPENPEER_MEDIA_ENGINE_INVALID_CHANNEL),
-        mVoiceTransport(&mRedirectVoiceTransport),
-        mVideoChannel(OPENPEER_MEDIA_ENGINE_INVALID_CHANNEL),
-        mVideoTransport(&mRedirectVideoTransport),
-        mCaptureId(0),
-        mCaptureIdx(0),
-        mVoiceEngine(NULL),
-        mVoiceBase(NULL),
-        mVoiceCodec(NULL),
-        mVoiceNetwork(NULL),
-        mVoiceRtpRtcp(NULL),
-        mVoiceAudioProcessing(NULL),
-        mVoiceVolumeControl(NULL),
-        mVoiceHardware(NULL),
-        mVoiceFile(NULL),
-        mVoiceEngineReady(false),
-        mVcpm(NULL),
-        mVideoEngine(NULL),
-        mVideoBase(NULL),
-        mVideoNetwork(NULL),
-        mVideoRender(NULL),
-        mVideoCapture(NULL),
-        mVideoRtpRtcp(NULL),
-        mVideoCodec(NULL),
-        mVideoFile(NULL),
-        mVideoEngineReady(false),
-        mFaceDetection(false),
-        mCaptureRenderView(NULL),
-        mChannelRenderView(NULL),
-        mRedirectVoiceTransport("voice"),
-        mRedirectVideoTransport("video"),
-        mLifetimeWantAudio(false),
-        mLifetimeWantVideoCapture(false),
-        mLifetimeWantVideoChannel(false),
-        mLifetimeWantRecordVideoCapture(false),
-        mLifetimeHasAudio(false),
-        mLifetimeHasVideoCapture(false),
-        mLifetimeHasVideoChannel(false),
-        mLifetimeHasRecordVideoCapture(false),
-        mLifetimeInProgress(false),
-        mLifetimeWantCaptureIdx(0),
-        mLifetimeContinuousVideoCapture(false),
-        mLifetimeVideoRecordFile(""),
-        mLifetimeSaveVideoToLibrary(false)
+      MediaEngineObsolete::MediaEngineObsolete(Noop) :
+      Noop(true),
+      MessageQueueAssociator(IMessageQueuePtr()),
+      mError(0),
+      mMtu(OPENPEER_MEDIA_ENGINE_MTU),
+      mID(zsLib::createPUID()),
+      mEcEnabled(false),
+      mAgcEnabled(false),
+      mNsEnabled(false),
+      mVoiceRecordFile(""),
+      mDefaultVideoOrientation(IMediaEngineObsolete::VideoOrientation_LandscapeLeft),
+      mRecordVideoOrientation(IMediaEngineObsolete::VideoOrientation_LandscapeLeft),
+      mVoiceChannel(OPENPEER_MEDIA_ENGINE_INVALID_CHANNEL),
+      mVoiceTransport(NULL),
+      mVideoChannel(OPENPEER_MEDIA_ENGINE_INVALID_CHANNEL),
+      mVideoTransport(NULL),
+      mCaptureId(0),
+      mCameraType(CameraType_Front),
+      mVoiceEngine(NULL),
+      mVoiceBase(NULL),
+      mVoiceCodec(NULL),
+      mVoiceNetwork(NULL),
+      mVoiceRtpRtcp(NULL),
+      mVoiceAudioProcessing(NULL),
+      mVoiceVolumeControl(NULL),
+      mVoiceHardware(NULL),
+      mVoiceFile(NULL),
+      mVoiceEngineReady(false),
+      mVcpm(NULL),
+      mVideoEngine(NULL),
+      mVideoBase(NULL),
+      mVideoNetwork(NULL),
+      mVideoRender(NULL),
+      mVideoCapture(NULL),
+      mVideoRtpRtcp(NULL),
+      mVideoCodec(NULL),
+      mVideoFile(NULL),
+      mVideoEngineReady(false),
+      mFaceDetection(false),
+      mCaptureRenderView(NULL),
+      mChannelRenderView(NULL),
+      mRedirectVoiceTransport("voice"),
+      mRedirectVideoTransport("video"),
+      mLifetimeWantAudio(false),
+      mLifetimeWantVideoCapture(false),
+      mLifetimeWantVideoChannel(false),
+      mLifetimeWantRecordVideoCapture(false),
+      mLifetimeHasAudio(false),
+      mLifetimeHasVideoCapture(false),
+      mLifetimeHasVideoChannel(false),
+      mLifetimeHasRecordVideoCapture(false),
+      mLifetimeInProgress(false),
+      mLifetimeWantCameraType(CameraType_Front),
+      mLifetimeContinuousVideoCapture(false),
+      mLifetimeVideoRecordFile(""),
+      mLifetimeSaveVideoToLibrary(false)
       {
 #ifdef TARGET_OS_IPHONE
         int name[] = {CTL_HW, HW_MACHINE};
@@ -214,7 +242,7 @@ namespace openpeer
       }
       
       //-----------------------------------------------------------------------
-      MediaEngine::~MediaEngine()
+      MediaEngineObsolete::~MediaEngineObsolete()
       {
         if(isNoop()) return;
         
@@ -222,7 +250,7 @@ namespace openpeer
       }
       
       //-----------------------------------------------------------------------
-      void MediaEngine::init()
+      void MediaEngineObsolete::init()
       {
         AutoRecursiveLock lock(mLock);
         
@@ -343,6 +371,8 @@ namespace openpeer
           return;
         }
         
+        setLogLevel();
+        
         Log::Level logLevel = ZS_GET_LOG_LEVEL();
         
         unsigned int traceFilter;
@@ -392,23 +422,7 @@ namespace openpeer
       }
       
       //-----------------------------------------------------------------------
-      MediaEnginePtr MediaEngine::create(IMediaEngineDelegatePtr delegate)
-      {
-        MediaEnginePtr pThis(new MediaEngine(IStackForInternal::queueCore(), delegate));
-        pThis->mThisWeak = pThis;
-        pThis->init();
-        return pThis;
-      }
-
-      //-----------------------------------------------------------------------
-      MediaEnginePtr MediaEngine::singleton(IMediaEngineDelegatePtr delegate)
-      {
-        static MediaEnginePtr engine = IMediaEngineFactory::singleton().createMediaEngine(delegate);
-        return engine;
-      }
-
-      //-----------------------------------------------------------------------
-      void MediaEngine::destroyMediaEngine()
+      void MediaEngineObsolete::destroyMediaEngine()
       {
         // scope: delete voice engine
         {
@@ -552,73 +566,83 @@ namespace openpeer
         }
       }
       
-      //---------------------------------------------------------------------
-      //---------------------------------------------------------------------
-      //---------------------------------------------------------------------
-      //---------------------------------------------------------------------
-      #pragma mark
-      #pragma mark MediaEngine => IMediaEngine
-      #pragma mark
-      
-      //-------------------------------------------------------------------------
-      IMediaEnginePtr IMediaEngine::singleton()
+      //-----------------------------------------------------------------------
+      void MediaEngineObsolete::setLogLevel()
       {
-        return internal::MediaEngine::singleton();
+        //        ILogger::setLogLevel("openpeer_webrtc", ILogger::Detail);
+      }
+      
+      //---------------------------------------------------------------------
+      //---------------------------------------------------------------------
+      //---------------------------------------------------------------------
+      //---------------------------------------------------------------------
+#pragma mark
+#pragma mark MediaEngineObsolete => IMediaEngine
+#pragma mark
+      
+      //-----------------------------------------------------------------------
+      MediaEngineObsoletePtr MediaEngineObsolete::create(IMediaEngineDelegateObsoletePtr delegate)
+      {
+        MediaEngineObsoletePtr pThis(new MediaEngineObsolete(IStackForInternal::queueCore(), delegate));
+        pThis->mThisWeak = pThis;
+        pThis->init();
+        return pThis;
       }
       
       //-----------------------------------------------------------------------
-      void IMediaEngine::setup(IMediaEngineDelegatePtr delegate)
+      MediaEngineObsoletePtr MediaEngineObsolete::singleton(IMediaEngineDelegateObsoletePtr delegate)
       {
-        MediaEngine::setup(delegate);
+        static MediaEngineObsoletePtr engine = IMediaEngineFactoryObsolete::singleton().createMediaEngine(delegate);
+        return engine;
       }
-
+      
       //-------------------------------------------------------------------------
-      void MediaEngine::setDefaultVideoOrientation(CapturedFrameOrientation orientation)
+      void MediaEngineObsolete::setDefaultVideoOrientation(VideoOrientations orientation)
       {
         AutoRecursiveLock lock(mLock);
         
-        ZS_LOG_DEBUG(log("set default video orientation - ") + Stringize<INT>(orientation).string())
+        ZS_LOG_DEBUG(log("set default video orientation - ") + IMediaEngineObsolete::toString(orientation))
         
         mDefaultVideoOrientation = orientation;
       }
       
       //-------------------------------------------------------------------------
-      webrtc::CapturedFrameOrientation MediaEngine::getDefaultVideoOrientation()
+      MediaEngineObsolete::VideoOrientations MediaEngineObsolete::getDefaultVideoOrientation()
       {
         AutoRecursiveLock lock(mLock);
-      
+        
         ZS_LOG_DEBUG(log("get default video orientation"))
         
         return mDefaultVideoOrientation;
       }
       
       //-------------------------------------------------------------------------
-      void MediaEngine::setRecordVideoOrientation(CapturedFrameOrientation orientation)
+      void MediaEngineObsolete::setRecordVideoOrientation(VideoOrientations orientation)
       {
         AutoRecursiveLock lock(mLock);
         
-        ZS_LOG_DEBUG(log("set record video orientation - ") + Stringize<INT>(orientation).string())
+        ZS_LOG_DEBUG(log("set record video orientation - ") + IMediaEngineObsolete::toString(orientation))
         
         mRecordVideoOrientation = orientation;
       }
       
       //-------------------------------------------------------------------------
-      webrtc::CapturedFrameOrientation MediaEngine::getRecordVideoOrientation()
+      MediaEngineObsolete::VideoOrientations MediaEngineObsolete::getRecordVideoOrientation()
       {
         AutoRecursiveLock lock(mLock);
-
+        
         ZS_LOG_DEBUG(log("get record video orientation"))
         
         return mRecordVideoOrientation;
       }
       
       //-----------------------------------------------------------------------
-      void MediaEngine::setVideoOrientation()
+      void MediaEngineObsolete::setVideoOrientation()
       {
         AutoRecursiveLock lock(mLock);
         
         ZS_LOG_DEBUG(log("set video orientation and codec parameters"))
-
+        
         if (mVideoChannel == OPENPEER_MEDIA_ENGINE_INVALID_CHANNEL) {
           mError = setVideoCaptureRotation();
         } else {
@@ -627,7 +651,7 @@ namespace openpeer
       }
       
       //-----------------------------------------------------------------------
-      void MediaEngine::setRenderView(int sourceId, void *renderView)
+      void MediaEngineObsolete::setCaptureRenderView(void *renderView)
       {
         AutoRecursiveLock lock(mLock);
         
@@ -637,7 +661,17 @@ namespace openpeer
       }
       
       //-----------------------------------------------------------------------
-      void MediaEngine::setEcEnabled(int channelId, bool enabled)
+      void MediaEngineObsolete::setChannelRenderView(void *renderView)
+      {
+        AutoRecursiveLock lock(mLock);
+        
+        ZS_LOG_DEBUG(log("set channel render view"))
+        
+        mChannelRenderView = renderView;
+      }
+      
+      //-----------------------------------------------------------------------
+      void MediaEngineObsolete::setEcEnabled(bool enabled)
       {
         AutoRecursiveLock lock(mLock);
         
@@ -664,7 +698,7 @@ namespace openpeer
       }
       
       //-----------------------------------------------------------------------
-      void MediaEngine::setAgcEnabled(int channelId, bool enabled)
+      void MediaEngineObsolete::setAgcEnabled(bool enabled)
       {
         AutoRecursiveLock lock(mLock);
         
@@ -679,7 +713,7 @@ namespace openpeer
       }
       
       //-----------------------------------------------------------------------
-      void MediaEngine::setNsEnabled(int channelId, bool enabled)
+      void MediaEngineObsolete::setNsEnabled(bool enabled)
       {
         AutoRecursiveLock lock(mLock);
         
@@ -694,7 +728,7 @@ namespace openpeer
       }
       
       //-------------------------------------------------------------------------
-      void MediaEngine::setVoiceRecordFile(String fileName)
+      void MediaEngineObsolete::setVoiceRecordFile(String fileName)
       {
         AutoRecursiveLock lock(mLock);
         
@@ -704,7 +738,7 @@ namespace openpeer
       }
       
       //-------------------------------------------------------------------------
-      String MediaEngine::getVoiceRecordFile() const
+      String MediaEngineObsolete::getVoiceRecordFile() const
       {
         AutoRecursiveLock lock(mLock);
         
@@ -714,7 +748,7 @@ namespace openpeer
       }
       
       //-----------------------------------------------------------------------
-      void MediaEngine::setMuteEnabled(bool enabled)
+      void MediaEngineObsolete::setMuteEnabled(bool enabled)
       {
         AutoRecursiveLock lock(mLock);
         
@@ -726,9 +760,9 @@ namespace openpeer
           return;
         }
       }
-
+      
       //-----------------------------------------------------------------------
-      bool MediaEngine::getMuteEnabled()
+      bool MediaEngineObsolete::getMuteEnabled()
       {
         AutoRecursiveLock lock(mLock);
         
@@ -745,7 +779,7 @@ namespace openpeer
       }
       
       //-----------------------------------------------------------------------
-      void MediaEngine::setLoudspeakerEnabled(bool enabled)
+      void MediaEngineObsolete::setLoudspeakerEnabled(bool enabled)
       {
         AutoRecursiveLock lock(mLock);
         
@@ -759,7 +793,7 @@ namespace openpeer
       }
       
       //-----------------------------------------------------------------------
-      bool MediaEngine::getLoudspeakerEnabled()
+      bool MediaEngineObsolete::getLoudspeakerEnabled()
       {
         AutoRecursiveLock lock(mLock);
         
@@ -776,7 +810,7 @@ namespace openpeer
       }
       
       //-----------------------------------------------------------------------
-      webrtc::OutputAudioRoute MediaEngine::getOutputAudioRoute()
+      IMediaEngineObsolete::OutputAudioRoutes MediaEngineObsolete::getOutputAudioRoute()
       {
         AutoRecursiveLock lock(mLock);
         
@@ -786,14 +820,23 @@ namespace openpeer
         mError = mVoiceHardware->GetOutputAudioRoute(route);
         if (mError != 0) {
           ZS_LOG_ERROR(Detail, log("failed to get output audio route (error: ") + Stringize<INT>(mVoiceBase->LastError()).string() + ")")
-          return webrtc::kOutputAudioRouteBuiltInSpeaker;
+          return OutputAudioRoute_BuiltInSpeaker;
         }
         
-        return route;
+        switch (route) {
+          case webrtc::kOutputAudioRouteHeadphone:
+            return OutputAudioRoute_Headphone;
+          case webrtc::kOutputAudioRouteBuiltInReceiver:
+            return OutputAudioRoute_BuiltInReceiver;
+          case webrtc::kOutputAudioRouteBuiltInSpeaker:
+            return OutputAudioRoute_BuiltInSpeaker;
+          default:
+            return OutputAudioRoute_BuiltInSpeaker;
+        }
       }
       
       //-----------------------------------------------------------------------
-      void MediaEngine::setContinuousVideoCapture(bool continuousVideoCapture)
+      void MediaEngineObsolete::setContinuousVideoCapture(bool continuousVideoCapture)
       {
         AutoRecursiveLock lock(mLifetimeLock);
         
@@ -803,7 +846,7 @@ namespace openpeer
       }
       
       //-----------------------------------------------------------------------
-      bool MediaEngine::getContinuousVideoCapture()
+      bool MediaEngineObsolete::getContinuousVideoCapture()
       {
         AutoRecursiveLock lock(mLifetimeLock);
         
@@ -813,7 +856,7 @@ namespace openpeer
       }
       
       //-----------------------------------------------------------------------
-      void MediaEngine::setFaceDetection(int captureId, bool faceDetection)
+      void MediaEngineObsolete::setFaceDetection(bool faceDetection)
       {
         AutoRecursiveLock lock(mLock);
         
@@ -823,7 +866,7 @@ namespace openpeer
       }
       
       //-----------------------------------------------------------------------
-      bool MediaEngine::getFaceDetection(int captureId)
+      bool MediaEngineObsolete::getFaceDetection()
       {
         AutoRecursiveLock lock(mLock);
         
@@ -833,25 +876,25 @@ namespace openpeer
       }
       
       //-----------------------------------------------------------------------
-      uint32_t MediaEngine::getCameraType(int captureId) const
+      IMediaEngineObsolete::CameraTypes MediaEngineObsolete::getCameraType() const
       {
         AutoRecursiveLock lock(mLifetimeLock);  // WARNING: THIS IS THE LIFETIME LOCK AND NOT THE MAIN OBJECT LOCK
-        return mLifetimeWantCaptureIdx;
+        return mLifetimeWantCameraType;
       }
       
       //-----------------------------------------------------------------------
-      void MediaEngine::setCameraType(int captureId, uint32_t captureIdx)
+      void MediaEngineObsolete::setCameraType(CameraTypes type)
       {
         {
           AutoRecursiveLock lock(mLifetimeLock);
-          mLifetimeWantCaptureIdx = captureIdx;
+          mLifetimeWantCameraType = type;
         }
         
         ThreadPtr(new boost::thread(boost::ref(*((mThisWeak.lock()).get()))));
       }
       
       //-----------------------------------------------------------------------
-      void MediaEngine::startVideoCapture(int captureId)
+      void MediaEngineObsolete::startVideoCapture()
       {
         {
           AutoRecursiveLock lock(mLifetimeLock);
@@ -862,7 +905,7 @@ namespace openpeer
       }
       
       //-----------------------------------------------------------------------
-      void MediaEngine::stopVideoCapture(int captureId)
+      void MediaEngineObsolete::stopVideoCapture()
       {
         {
           AutoRecursiveLock lock(mLifetimeLock);
@@ -872,96 +915,8 @@ namespace openpeer
         ThreadPtr(new boost::thread(boost::ref(*((mThisWeak.lock()).get()))));
       }
       
-      //-----------------------------------------------------------------------
-      void MediaEngine::startSendVideoChannel(int channelId)
-      {
-        {
-          AutoRecursiveLock lock(mLifetimeLock);
-          mLifetimeWantVideoChannel = true;
-        }
-        
-        ThreadPtr(new boost::thread(boost::ref(*((mThisWeak.lock()).get()))));
-      }
-      
-      //-----------------------------------------------------------------------
-      void MediaEngine::startReceiveVideoChannel(int channelId)
-      {
-        {
-          AutoRecursiveLock lock(mLifetimeLock);
-          mLifetimeWantVideoChannel = true;
-        }
-        
-        ThreadPtr(new boost::thread(boost::ref(*((mThisWeak.lock()).get()))));
-      }
-      
-      //-----------------------------------------------------------------------
-      void MediaEngine::stopSendVideoChannel(int channelId)
-      {
-        {
-          AutoRecursiveLock lock(mLifetimeLock);
-          mLifetimeWantVideoChannel = false;
-        }
-        
-        ThreadPtr(new boost::thread(boost::ref(*((mThisWeak.lock()).get()))));
-      }
-      
-      //-----------------------------------------------------------------------
-      void MediaEngine::stopReceiveVideoChannel(int channelId)
-      {
-        {
-          AutoRecursiveLock lock(mLifetimeLock);
-          mLifetimeWantVideoChannel = false;
-        }
-        
-        ThreadPtr(new boost::thread(boost::ref(*((mThisWeak.lock()).get()))));
-      }
-
-      //-----------------------------------------------------------------------
-      void MediaEngine::startSendVoice(int channelId)
-      {
-        {
-          AutoRecursiveLock lock(mLifetimeLock);
-          mLifetimeWantAudio = true;
-        }
-        
-        ThreadPtr(new boost::thread(boost::ref(*((mThisWeak.lock()).get()))));
-      }
-      
-      //-----------------------------------------------------------------------
-      void MediaEngine::startReceiveVoice(int channelId)
-      {
-        {
-          AutoRecursiveLock lock(mLifetimeLock);
-          mLifetimeWantAudio = true;
-        }
-        
-        ThreadPtr(new boost::thread(boost::ref(*((mThisWeak.lock()).get()))));
-      }
-      
-      //-----------------------------------------------------------------------
-      void MediaEngine::stopSendVoice(int channelId)
-      {
-        {
-          AutoRecursiveLock lock(mLifetimeLock);
-          mLifetimeWantAudio = false;
-        }
-        
-        ThreadPtr(new boost::thread(boost::ref(*((mThisWeak.lock()).get()))));
-      }
-      
-      //-----------------------------------------------------------------------
-      void MediaEngine::stopReceiveVoice(int channelId)
-      {
-        {
-          AutoRecursiveLock lock(mLifetimeLock);
-          mLifetimeWantAudio = false;
-        }
-        
-        ThreadPtr(new boost::thread(boost::ref(*((mThisWeak.lock()).get()))));
-      }
-      
       //-------------------------------------------------------------------------
-      void MediaEngine::startRecordVideoCapture(int captureId, String fileName, bool saveToLibrary)
+      void MediaEngineObsolete::startRecordVideoCapture(String fileName, bool saveToLibrary)
       {
         {
           AutoRecursiveLock lock(mLifetimeLock);
@@ -974,7 +929,7 @@ namespace openpeer
       }
       
       //-------------------------------------------------------------------------
-      void MediaEngine::stopRecordVideoCapture(int captureId)
+      void MediaEngineObsolete::stopRecordVideoCapture()
       {
         {
           AutoRecursiveLock lock(mLifetimeLock);
@@ -985,74 +940,140 @@ namespace openpeer
       }
       
       //-----------------------------------------------------------------------
-      int MediaEngine::getVideoTransportStatistics(int channelId, CallStatistics &stat)
+      int MediaEngineObsolete::getVideoTransportStatistics(RtpRtcpStatistics &stat)
       {
         AutoRecursiveLock lock(mLock);
-
+        
         unsigned short fractionLost;
         unsigned int cumulativeLost;
         unsigned int extendedMax;
         unsigned int jitter;
         int rttMs;
-
+        
         mError = mVideoRtpRtcp->GetReceivedRTCPStatistics(mVideoChannel, fractionLost, cumulativeLost, extendedMax, jitter, rttMs);
         if (0 != mError) {
-        ZS_LOG_ERROR(Detail, log("failed to get received RTCP statistics for video (error: ") + Stringize<INT>(mVideoBase->LastError()).string() + ")")
-        return mError;
+          ZS_LOG_ERROR(Detail, log("failed to get received RTCP statistics for video (error: ") + Stringize<INT>(mVideoBase->LastError()).string() + ")")
+          return mError;
         }
-
+        
         unsigned int bytesSent;
         unsigned int packetsSent;
         unsigned int bytesReceived;
         unsigned int packetsReceived;
-
+        
         mError = mVideoRtpRtcp->GetRTPStatistics(mVideoChannel, bytesSent, packetsSent, bytesReceived, packetsReceived);
         if (0 != mError) {
-        ZS_LOG_ERROR(Detail, log("failed to get RTP statistics for video (error: ") + Stringize<INT>(mVideoBase->LastError()).string() + ")")
-        return mError;
+          ZS_LOG_ERROR(Detail, log("failed to get RTP statistics for video (error: ") + Stringize<INT>(mVideoBase->LastError()).string() + ")")
+          return mError;
         }
-
+        
         stat.fractionLost = fractionLost;
         stat.cumulativeLost = cumulativeLost;
         stat.extendedMax = extendedMax;
-//        stat.jitter = jitter;
+        stat.jitter = jitter;
         stat.rttMs = rttMs;
         stat.bytesSent = bytesSent;
         stat.packetsSent = packetsSent;
         stat.bytesReceived = bytesReceived;
         stat.packetsReceived = packetsReceived;
-
+        
         return 0;
       }
       
       //-----------------------------------------------------------------------
-      int MediaEngine::getVoiceTransportStatistics(int channelId, CallStatistics &stat)
+      int MediaEngineObsolete::getVoiceTransportStatistics(RtpRtcpStatistics &stat)
       {
         AutoRecursiveLock lock(mLock);
-
+        
         webrtc::CallStatistics callStat;
-
+        
         mError = mVoiceRtpRtcp->GetRTCPStatistics(mVoiceChannel, callStat);
         if (0 != mError) {
-        ZS_LOG_ERROR(Detail, log("failed to get RTCP statistics for voice (error: ") + Stringize<INT>(mVoiceBase->LastError()).string() + ")")
-        return mError;
+          ZS_LOG_ERROR(Detail, log("failed to get RTCP statistics for voice (error: ") + Stringize<INT>(mVoiceBase->LastError()).string() + ")")
+          return mError;
         }
-
+        
         stat.fractionLost = callStat.fractionLost;
         stat.cumulativeLost = callStat.cumulativeLost;
         stat.extendedMax = callStat.extendedMax;
-//        stat.jitter = callStat.jitterSamples;
+        stat.jitter = callStat.jitterSamples;
         stat.rttMs = callStat.rttMs;
         stat.bytesSent = callStat.bytesSent;
         stat.packetsSent = callStat.packetsSent;
         stat.bytesReceived = callStat.bytesReceived;
         stat.packetsReceived = callStat.packetsReceived;
-
+        
         return 0;
       }
       
       //-----------------------------------------------------------------------
-      int MediaEngine::registerExternalTransport(int channelId, Transport &transport)
+      //-----------------------------------------------------------------------
+      //-----------------------------------------------------------------------
+      //-----------------------------------------------------------------------
+#pragma mark
+#pragma mark MediaEngineObsolete => IMediaEngineForStack
+#pragma mark
+      
+      //-----------------------------------------------------------------------
+      void MediaEngineObsolete::setup(IMediaEngineDelegateObsoletePtr delegate)
+      {
+        singleton(delegate);
+      }
+      
+      //-----------------------------------------------------------------------
+      //-----------------------------------------------------------------------
+      //-----------------------------------------------------------------------
+      //-----------------------------------------------------------------------
+#pragma mark
+#pragma mark MediaEngineObsolete => IMediaEngineForCallTransport
+#pragma mark
+      
+      //-----------------------------------------------------------------------
+      void MediaEngineObsolete::startVoice()
+      {
+        {
+          AutoRecursiveLock lock(mLifetimeLock);
+          mLifetimeWantAudio = true;
+        }
+        
+        ThreadPtr(new boost::thread(boost::ref(*((mThisWeak.lock()).get()))));
+      }
+      
+      //-----------------------------------------------------------------------
+      void MediaEngineObsolete::stopVoice()
+      {
+        {
+          AutoRecursiveLock lock(mLifetimeLock);
+          mLifetimeWantAudio = false;
+        }
+        
+        ThreadPtr(new boost::thread(boost::ref(*((mThisWeak.lock()).get()))));
+      }
+      
+      //-----------------------------------------------------------------------
+      void MediaEngineObsolete::startVideoChannel()
+      {
+        {
+          AutoRecursiveLock lock(mLifetimeLock);
+          mLifetimeWantVideoChannel = true;
+        }
+        
+        ThreadPtr(new boost::thread(boost::ref(*((mThisWeak.lock()).get()))));
+      }
+      
+      //-----------------------------------------------------------------------
+      void MediaEngineObsolete::stopVideoChannel()
+      {
+        {
+          AutoRecursiveLock lock(mLifetimeLock);
+          mLifetimeWantVideoChannel = false;
+        }
+        
+        ThreadPtr(new boost::thread(boost::ref(*((mThisWeak.lock()).get()))));
+      }
+      
+      //-----------------------------------------------------------------------
+      int MediaEngineObsolete::registerVoiceExternalTransport(Transport &transport)
       {
         AutoRecursiveLock lock(mLock);
         
@@ -1064,7 +1085,7 @@ namespace openpeer
       }
       
       //-----------------------------------------------------------------------
-      int MediaEngine::deregisterExternalTransport(int channelId)
+      int MediaEngineObsolete::deregisterVoiceExternalTransport()
       {
         AutoRecursiveLock lock(mLock);
         
@@ -1076,7 +1097,7 @@ namespace openpeer
       }
       
       //-----------------------------------------------------------------------
-      int MediaEngine::receivedRTPPacket(int channelId, const void *data, unsigned int length)
+      int MediaEngineObsolete::receivedVoiceRTPPacket(const void *data, unsigned int length)
       {
         int channel = OPENPEER_MEDIA_ENGINE_INVALID_CHANNEL;
         {
@@ -1100,7 +1121,7 @@ namespace openpeer
       }
       
       //-----------------------------------------------------------------------
-      int MediaEngine::receivedRTCPPacket(int channelId, const void* data, unsigned int length)
+      int MediaEngineObsolete::receivedVoiceRTCPPacket(const void* data, unsigned int length)
       {
         int channel = OPENPEER_MEDIA_ENGINE_INVALID_CHANNEL;
         {
@@ -1122,17 +1143,88 @@ namespace openpeer
         
         return 0;
       }
-
-      //---------------------------------------------------------------------
-      //---------------------------------------------------------------------
-      //---------------------------------------------------------------------
-      //---------------------------------------------------------------------
-      #pragma mark
-      #pragma mark MediaEngine => TraceCallback
-      #pragma mark
       
       //-----------------------------------------------------------------------
-      void MediaEngine::Print(const webrtc::TraceLevel level, const char *traceString, const int length)
+      int MediaEngineObsolete::registerVideoExternalTransport(Transport &transport)
+      {
+        AutoRecursiveLock lock(mLock);
+        
+        ZS_LOG_DEBUG(log("register video external transport"))
+        
+        mRedirectVideoTransport.redirect(&transport);
+        
+        return 0;
+      }
+      
+      //-----------------------------------------------------------------------
+      int MediaEngineObsolete::deregisterVideoExternalTransport()
+      {
+        AutoRecursiveLock lock(mLock);
+        
+        ZS_LOG_DEBUG(log("deregister video external transport"))
+        
+        mRedirectVideoTransport.redirect(NULL);
+        
+        return 0;
+      }
+      
+      //-----------------------------------------------------------------------
+      int MediaEngineObsolete::receivedVideoRTPPacket(const void *data, const int length)
+      {
+        int channel = OPENPEER_MEDIA_ENGINE_INVALID_CHANNEL;
+        {
+          AutoRecursiveLock lock(mMediaEngineReadyLock);
+          if (mVideoEngineReady)
+            channel = mVideoChannel;
+        }
+        
+        if (OPENPEER_MEDIA_ENGINE_INVALID_CHANNEL == channel) {
+          ZS_LOG_WARNING(Debug, log("video channel is not ready yet"))
+          return -1;
+        }
+        
+        mError = mVideoNetwork->ReceivedRTPPacket(channel, data, length);
+        if (0 != mError) {
+          ZS_LOG_ERROR(Detail, log("received video RTP packet failed (error: ") + Stringize<INT>(mVideoBase->LastError()).string() + ")")
+          return mError;
+        }
+        
+        return 0;
+      }
+      
+      //-----------------------------------------------------------------------
+      int MediaEngineObsolete::receivedVideoRTCPPacket(const void *data, const int length)
+      {
+        int channel = OPENPEER_MEDIA_ENGINE_INVALID_CHANNEL;
+        {
+          AutoRecursiveLock lock(mMediaEngineReadyLock);
+          if (mVideoEngineReady)
+            channel = mVideoChannel;
+        }
+        
+        if (OPENPEER_MEDIA_ENGINE_INVALID_CHANNEL == channel) {
+          ZS_LOG_WARNING(Debug, log("video channel is not ready yet"))
+          return -1;
+        }
+        
+        mError = mVideoNetwork->ReceivedRTCPPacket(channel, data, length);
+        if (0 != mError) {
+          ZS_LOG_ERROR(Detail, log("received video RTCP packet failed (error: ") + Stringize<INT>(mVideoBase->LastError()).string() + ")")
+          return mError;
+        }
+        
+        return 0;
+      }
+      
+      //---------------------------------------------------------------------
+      //---------------------------------------------------------------------
+      //---------------------------------------------------------------------
+      //---------------------------------------------------------------------
+#pragma mark
+#pragma mark MediaEngineObsolete => TraceCallback
+#pragma mark
+      //-----------------------------------------------------------------------
+      void MediaEngineObsolete::Print(const webrtc::TraceLevel level, const char *traceString, const int length)
       {
         switch (level) {
           case webrtc::kTraceApiCall:
@@ -1168,32 +1260,43 @@ namespace openpeer
       //---------------------------------------------------------------------
       //---------------------------------------------------------------------
       //---------------------------------------------------------------------
-      #pragma mark
-      #pragma mark MediaEngine => VoiceEngineObserver
-      #pragma mark
-      
+#pragma mark
+#pragma mark MediaEngineObsolete => VoiceEngineObserver
+#pragma mark
       //-----------------------------------------------------------------------
-      void MediaEngine::CallbackOnError(const int errCode, const int channel)
+      void MediaEngineObsolete::CallbackOnError(const int errCode, const int channel)
       {
         ZS_LOG_ERROR(Detail, log("Voice engine error: ") + Stringize<INT>(errCode).string() + ")")
       }
       
       //-----------------------------------------------------------------------
-      void MediaEngine::CallbackOnOutputAudioRouteChange(const webrtc::OutputAudioRoute inRoute)
+      void MediaEngineObsolete::CallbackOnOutputAudioRouteChange(const webrtc::OutputAudioRoute inRoute)
       {
         if (!mDelegate) {
           ZS_LOG_WARNING(Detail, log("audio route change callback igored as delegate was not specified"))
           return;
         }
         
+        OutputAudioRoutes route = IMediaEngineObsolete::OutputAudioRoute_Headphone;
+        
+        switch (inRoute) {
+          case webrtc::kOutputAudioRouteHeadphone:        route = IMediaEngineObsolete::OutputAudioRoute_Headphone;  break;
+          case webrtc::kOutputAudioRouteBuiltInReceiver:  route = IMediaEngineObsolete::OutputAudioRoute_BuiltInReceiver; break;
+          case webrtc::kOutputAudioRouteBuiltInSpeaker:   route = IMediaEngineObsolete::OutputAudioRoute_BuiltInSpeaker; break;
+          default: {
+            ZS_LOG_WARNING(Basic, log("media route changed to unknown type") + ", value=" + Stringize<typeof(inRoute)>(inRoute).string())
+            break;
+          }
+        }
+        
         try {
           if (mDelegate)
-            mDelegate->onMediaEngineAudioRouteChanged(inRoute);
-        } catch (IMediaEngineDelegateProxy::Exceptions::DelegateGone &) {
+            mDelegate->onMediaEngineAudioRouteChanged(route);
+        } catch (IMediaEngineDelegateObsoleteProxy::Exceptions::DelegateGone &) {
           ZS_LOG_WARNING(Detail, log("delegate gone"))
         }
         
-        ZS_LOG_DEBUG(log("Audio output route changed") + ", route=" + Stringize<INT>(inRoute).string())
+        ZS_LOG_DEBUG(log("Audio output route changed") + ", route=" + IMediaEngineObsolete::toString(route))
       }
       
       //-----------------------------------------------------------------------
@@ -1201,35 +1304,34 @@ namespace openpeer
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
-      #pragma mark
-      #pragma mark MediaEngine => ViECaptureObserver
-      #pragma mark
-      
+#pragma mark
+#pragma mark MediaEngineObsolete => ViECaptureObserver
+#pragma mark
       //-------------------------------------------------------------------------
-      void MediaEngine::BrightnessAlarm(const int capture_id, const webrtc::Brightness brightness)
+      void MediaEngineObsolete::BrightnessAlarm(const int capture_id, const webrtc::Brightness brightness)
       {
         
       }
       
       //-------------------------------------------------------------------------
-      void MediaEngine::CapturedFrameRate(const int capture_id, const unsigned char frame_rate)
+      void MediaEngineObsolete::CapturedFrameRate(const int capture_id, const unsigned char frame_rate)
       {
         
       }
       
       //-------------------------------------------------------------------------
-      void MediaEngine::NoPictureAlarm(const int capture_id, const webrtc::CaptureAlarm alarm)
+      void MediaEngineObsolete::NoPictureAlarm(const int capture_id, const webrtc::CaptureAlarm alarm)
       {
         
       }
       
       //-------------------------------------------------------------------------
-      void MediaEngine::FaceDetected(const int capture_id)
+      void MediaEngineObsolete::FaceDetected(const int capture_id)
       {
         try {
           if (mDelegate)
-            mDelegate->onMediaEngineFaceDetected(capture_id);
-        } catch (IMediaEngineDelegateProxy::Exceptions::DelegateGone &) {
+            mDelegate->onMediaEngineFaceDetected();
+        } catch (IMediaEngineDelegateObsoleteProxy::Exceptions::DelegateGone &) {
           ZS_LOG_WARNING(Detail, log("delegate gone"))
         }
       }
@@ -1238,19 +1340,19 @@ namespace openpeer
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
-      #pragma mark
-      #pragma mark MediaEngine => (internal)
-      #pragma mark
+#pragma mark
+#pragma mark MediaEngineObsolete => (internal)
+#pragma mark
       
       //-----------------------------------------------------------------------
-      void MediaEngine::operator()()
+      void MediaEngineObsolete::operator()()
       {
 #ifndef _LINUX
-#ifdef __QNX__
+# ifdef __QNX__
         pthread_setname_np(pthread_self(), "org.openpeer.core.mediaEngine");
-#else
+# else
         pthread_setname_np("org.openpeer.core.mediaEngine");
-#endif
+# endif
 #endif
         ZS_LOG_DEBUG(log("media engine lifetime thread spawned"))
         
@@ -1266,7 +1368,7 @@ namespace openpeer
         bool hasVideoCapture = false;
         bool hasVideoChannel = false;
         bool hasRecordVideoCapture = false;
-        uint32_t wantCaptureIdx = 0;
+        CameraTypes wantCameraType = IMediaEngineObsolete::CameraType_None;
         String videoRecordFile;
         bool saveVideoToLibrary;
         
@@ -1300,7 +1402,7 @@ namespace openpeer
           hasVideoCapture = mLifetimeHasVideoCapture;
           hasVideoChannel = mLifetimeHasVideoChannel;
           hasRecordVideoCapture = mLifetimeHasRecordVideoCapture;
-          wantCaptureIdx = mLifetimeWantCaptureIdx;
+          wantCameraType = mLifetimeWantCameraType;
           videoRecordFile = mLifetimeVideoRecordFile;
           saveVideoToLibrary = mLifetimeSaveVideoToLibrary;
           break;
@@ -1310,9 +1412,9 @@ namespace openpeer
           AutoRecursiveLock lock(mLock);
           
           if (wantVideoCapture) {
-            if (wantCaptureIdx != mCaptureIdx) {
-              ZS_LOG_DEBUG(log("camera type needs to change") + ", was=" + Stringize<INT>(mCaptureIdx).string() + ", desired=" + Stringize<INT>(wantCaptureIdx).string())
-              mCaptureIdx = wantCaptureIdx;
+            if (wantCameraType != mCameraType) {
+              ZS_LOG_DEBUG(log("camera type needs to change") + ", was=" + IMediaEngineObsolete::toString(mCameraType) + ", desired=" + IMediaEngineObsolete::toString(wantCameraType))
+              mCameraType = wantCameraType;
               if (hasVideoCapture) {
                 ZS_LOG_DEBUG(log("video capture must be stopped first before camera type can be swapped (will try again)"))
                 wantVideoCapture = false;  // pretend that we don't want video so it will be stopped
@@ -1343,21 +1445,21 @@ namespace openpeer
           
           if (wantAudio) {
             if (!hasAudio) {
-              internalStartSendVoice();
+              internalStartVoice();
             }
           } else {
             if (hasAudio) {
-              internalStopSendVoice();
+              internalStopVoice();
             }
           }
           
           if (wantVideoChannel) {
             if (!hasVideoChannel) {
-              internalStartSendVideoChannel();
+              internalStartVideoChannel();
             }
           } else {
             if (hasVideoChannel) {
-              internalStopSendVideoChannel();
+              internalStopVideoChannel();
             }
           }
           
@@ -1389,26 +1491,63 @@ namespace openpeer
       }
       
       //-----------------------------------------------------------------------
-      void MediaEngine::internalStartSendVoice()
+      void MediaEngineObsolete::internalStartVoice()
       {
         {
           AutoRecursiveLock lock(mLock);
           
-          ZS_LOG_DEBUG(log("start send voice"))
+          ZS_LOG_DEBUG(log("start voice"))
           
-          if (mVoiceChannel == OPENPEER_MEDIA_ENGINE_INVALID_CHANNEL) {
-            mVoiceChannel = mVoiceBase->CreateChannel();
-            if (mVoiceChannel < 0) {
-              ZS_LOG_ERROR(Detail, log("could not create voice channel (error: ") + Stringize<INT>(mVoiceBase->LastError()).string() + ")")
-              mVoiceChannel = OPENPEER_MEDIA_ENGINE_INVALID_CHANNEL;
-              return;
-            }
+          mVoiceChannel = mVoiceBase->CreateChannel();
+          if (mVoiceChannel < 0) {
+            ZS_LOG_ERROR(Detail, log("could not create voice channel (error: ") + Stringize<INT>(mVoiceBase->LastError()).string() + ")")
+            mVoiceChannel = OPENPEER_MEDIA_ENGINE_INVALID_CHANNEL;
+            return;
           }
           
-          mError = registerVoiceSendTransport();
+          mError = registerVoiceTransport();
           if (mError != 0)
             return;
           
+          webrtc::EcModes ecMode = getEcMode();
+          if (ecMode == webrtc::kEcUnchanged) {
+            return;
+          }
+          mError = mVoiceAudioProcessing->SetEcStatus(mEcEnabled, ecMode);
+          if (mError != 0) {
+            ZS_LOG_ERROR(Detail, log("failed to set acoustic echo canceller status (error: ") + Stringize<INT>(mVoiceBase->LastError()).string() + ")")
+            return;
+          }
+          if (ecMode == webrtc::kEcAecm && mEcEnabled) {
+            mError = mVoiceAudioProcessing->SetAecmMode(webrtc::kAecmSpeakerphone);
+            if (mError != 0) {
+              ZS_LOG_ERROR(Detail, log("failed to set acoustic echo canceller mobile mode (error: ") + Stringize<INT>(mVoiceBase->LastError()).string() + ")")
+              return;
+            }
+          }
+          mError = mVoiceAudioProcessing->SetAgcStatus(mAgcEnabled, webrtc::kAgcAdaptiveDigital);
+          if (mError != 0) {
+            ZS_LOG_ERROR(Detail, log("failed to set automatic gain control status (error: ") + Stringize<INT>(mVoiceBase->LastError()).string() + ")")
+            return;
+          }
+          mError = mVoiceAudioProcessing->SetNsStatus(mNsEnabled, webrtc::kNsLowSuppression);
+          if (mError != 0) {
+            ZS_LOG_ERROR(Detail, log("failed to set noise suppression status (error: ") + Stringize<INT>(mVoiceBase->LastError()).string() + ")")
+            return;
+          }
+          
+          mError = mVoiceVolumeControl->SetInputMute(-1, false);
+          if (mError != 0) {
+            ZS_LOG_ERROR(Detail, log("failed to set microphone mute (error: ") + Stringize<INT>(mVoiceBase->LastError()).string() + ")")
+            return;
+          }
+#ifdef TARGET_OS_IPHONE
+          mError = mVoiceHardware->SetLoudspeakerStatus(false);
+          if (mError != 0) {
+            ZS_LOG_ERROR(Detail, log("failed to set loudspeaker (error: ") + Stringize<INT>(mVoiceBase->LastError()).string() + ")")
+            return;
+          }
+#endif
           webrtc::CodecInst cinst;
           memset(&cinst, 0, sizeof(webrtc::CodecInst));
           for (int idx = 0; idx < mVoiceCodec->NumOfCodecs(); idx++) {
@@ -1450,95 +1589,6 @@ namespace openpeer
 #endif
           }
           
-          mError = setVoiceSendTransportParameters();
-          if (mError != 0)
-            return;
-          
-          mError = mVoiceBase->StartSend(mVoiceChannel);
-          if (mError != 0) {
-            ZS_LOG_ERROR(Detail, log("failed to start sending voice (error: ") + Stringize<INT>(mVoiceBase->LastError()).string() + ")")
-            return;
-          }
-        }
-        
-        {
-          AutoRecursiveLock lock(mMediaEngineReadyLock);
-          mVoiceEngineReady = true;
-        }
-      }
-
-      //-----------------------------------------------------------------------
-      void MediaEngine::internalStartReceiveVoice()
-      {
-        {
-          AutoRecursiveLock lock(mLock);
-          
-          ZS_LOG_DEBUG(log("start receive voice"))
-          
-          if (mVoiceChannel == OPENPEER_MEDIA_ENGINE_INVALID_CHANNEL) {
-            mVoiceChannel = mVoiceBase->CreateChannel();
-            if (mVoiceChannel < 0) {
-              ZS_LOG_ERROR(Detail, log("could not create voice channel (error: ") + Stringize<INT>(mVoiceBase->LastError()).string() + ")")
-              mVoiceChannel = OPENPEER_MEDIA_ENGINE_INVALID_CHANNEL;
-              return;
-            }
-          }
-          
-          webrtc::EcModes ecMode = getEcMode();
-          if (ecMode == webrtc::kEcUnchanged) {
-            return;
-          }
-          mError = mVoiceAudioProcessing->SetEcStatus(mEcEnabled, ecMode);
-          if (mError != 0) {
-            ZS_LOG_ERROR(Detail, log("failed to set acoustic echo canceller status (error: ") + Stringize<INT>(mVoiceBase->LastError()).string() + ")")
-            return;
-          }
-          if (ecMode == webrtc::kEcAecm && mEcEnabled) {
-            mError = mVoiceAudioProcessing->SetAecmMode(webrtc::kAecmSpeakerphone);
-            if (mError != 0) {
-              ZS_LOG_ERROR(Detail, log("failed to set acoustic echo canceller mobile mode (error: ") + Stringize<INT>(mVoiceBase->LastError()).string() + ")")
-              return;
-            }
-          }
-          mError = mVoiceAudioProcessing->SetAgcStatus(mAgcEnabled, webrtc::kAgcAdaptiveDigital);
-          if (mError != 0) {
-            ZS_LOG_ERROR(Detail, log("failed to set automatic gain control status (error: ") + Stringize<INT>(mVoiceBase->LastError()).string() + ")")
-            return;
-          }
-          mError = mVoiceAudioProcessing->SetNsStatus(mNsEnabled, webrtc::kNsLowSuppression);
-          if (mError != 0) {
-            ZS_LOG_ERROR(Detail, log("failed to set noise suppression status (error: ") + Stringize<INT>(mVoiceBase->LastError()).string() + ")")
-            return;
-          }
-          
-          mError = mVoiceVolumeControl->SetInputMute(-1, false);
-          if (mError != 0) {
-            ZS_LOG_ERROR(Detail, log("failed to set microphone mute (error: ") + Stringize<INT>(mVoiceBase->LastError()).string() + ")")
-            return;
-          }
-#ifdef TARGET_OS_IPHONE
-          mError = mVoiceHardware->SetLoudspeakerStatus(false);
-          if (mError != 0) {
-            ZS_LOG_ERROR(Detail, log("failed to set loudspeaker (error: ") + Stringize<INT>(mVoiceBase->LastError()).string() + ")")
-            return;
-          }
-#endif
-          
-          mError = setVoiceReceiveTransportParameters();
-          if (mError != 0)
-            return;
-          
-          mError = mVoiceBase->StartReceive(mVoiceChannel);
-          if (mError != 0) {
-            ZS_LOG_ERROR(Detail, log("failed to start receiving voice (error: ") + Stringize<INT>(mVoiceBase->LastError()).string() + ")")
-            return;
-          }
-          mError = mVoiceBase->StartPlayout(mVoiceChannel);
-          if (mError != 0) {
-            ZS_LOG_ERROR(Detail, log("failed to start playout (error: ") + Stringize<INT>(mVoiceBase->LastError()).string() + ")")
-            return;
-          }
-          
           webrtc::CodecInst cfinst;
           memset(&cfinst, 0, sizeof(webrtc::CodecInst));
           for (int idx = 0; idx < mVoiceCodec->NumOfCodecs(); idx++) {
@@ -1557,7 +1607,27 @@ namespace openpeer
               break;
             }
           }
-
+          
+          mError = setVoiceTransportParameters();
+          if (mError != 0)
+            return;
+          
+          mError = mVoiceBase->StartSend(mVoiceChannel);
+          if (mError != 0) {
+            ZS_LOG_ERROR(Detail, log("failed to start sending voice (error: ") + Stringize<INT>(mVoiceBase->LastError()).string() + ")")
+            return;
+          }
+          
+          mError = mVoiceBase->StartReceive(mVoiceChannel);
+          if (mError != 0) {
+            ZS_LOG_ERROR(Detail, log("failed to start receiving voice (error: ") + Stringize<INT>(mVoiceBase->LastError()).string() + ")")
+            return;
+          }
+          mError = mVoiceBase->StartPlayout(mVoiceChannel);
+          if (mError != 0) {
+            ZS_LOG_ERROR(Detail, log("failed to start playout (error: ") + Stringize<INT>(mVoiceBase->LastError()).string() + ")")
+            return;
+          }
           if (!mVoiceRecordFile.empty()) {
             mError = mVoiceFile->StartRecordingCall(mVoiceRecordFile, &cfinst);
             if (mError != 0) {
@@ -1573,7 +1643,7 @@ namespace openpeer
       }
       
       //-----------------------------------------------------------------------
-      void MediaEngine::internalStopSendVoice()
+      void MediaEngineObsolete::internalStopVoice()
       {
         {
           AutoRecursiveLock lock(mMediaEngineReadyLock);
@@ -1583,38 +1653,13 @@ namespace openpeer
         {
           AutoRecursiveLock lock(mLock);
           
-          ZS_LOG_DEBUG(log("stop send voice"))
+          ZS_LOG_DEBUG(log("stop voice"))
           
           mError = mVoiceBase->StopSend(mVoiceChannel);
           if (mError != 0) {
             ZS_LOG_ERROR(Detail, log("failed to stop sending voice (error: ") + Stringize<INT>(mVoiceBase->LastError()).string() + ")")
             return;
           }
-          mError = deregisterVoiceSendTransport();
-          if (0 != mError)
-            return;
-          mError = mVoiceBase->DeleteChannel(mVoiceChannel);
-          if (mError != 0) {
-            ZS_LOG_ERROR(Detail, log("failed to delete voice channel (error: ") + Stringize<INT>(mVoiceBase->LastError()).string() + ")")
-            return;
-          }
-          mVoiceChannel = OPENPEER_MEDIA_ENGINE_INVALID_CHANNEL;
-        }
-      }
-      
-      //-----------------------------------------------------------------------
-      void MediaEngine::internalStopReceiveVoice()
-      {
-        {
-          AutoRecursiveLock lock(mMediaEngineReadyLock);
-          mVoiceEngineReady = false;
-        }
-        
-        {
-          AutoRecursiveLock lock(mLock);
-          
-          ZS_LOG_DEBUG(log("stop receive voice"))
-
           mError = mVoiceBase->StopPlayout(mVoiceChannel);
           if (mError != 0) {
             ZS_LOG_ERROR(Detail, log("failed to stop playout (error: ") + Stringize<INT>(mVoiceBase->LastError()).string() + ")")
@@ -1632,8 +1677,11 @@ namespace openpeer
             }
             mVoiceRecordFile.erase();
           }
-          if (0 != mError)
+          mError = mVoiceNetwork->DeRegisterExternalTransport(mVoiceChannel);
+          if (mError != 0) {
+            ZS_LOG_ERROR(Detail, log("failed to deregister voice external transport (error: ") + Stringize<INT>(mVoiceBase->LastError()).string() + ")")
             return;
+          }
           mError = mVoiceBase->DeleteChannel(mVoiceChannel);
           if (mError != 0) {
             ZS_LOG_ERROR(Detail, log("failed to delete voice channel (error: ") + Stringize<INT>(mVoiceBase->LastError()).string() + ")")
@@ -1642,14 +1690,38 @@ namespace openpeer
           mVoiceChannel = OPENPEER_MEDIA_ENGINE_INVALID_CHANNEL;
         }
       }
-
+      
       //-----------------------------------------------------------------------
-      void MediaEngine::internalStartVideoCapture()
+      int MediaEngineObsolete::registerVoiceTransport()
+      {
+        if (NULL != mVoiceTransport) {
+          mError = mVoiceNetwork->RegisterExternalTransport(mVoiceChannel, *mVoiceTransport);
+          if (0 != mError) {
+            ZS_LOG_ERROR(Detail, log("failed to register voice external transport (error: ") + Stringize<INT>(mVoiceBase->LastError()).string() + ")")
+            return mError;
+          }
+        } else {
+          ZS_LOG_ERROR(Detail, log("external voice transport is not set"))
+          return -1;
+        }
+        
+        return 0;
+      }
+      
+      //-----------------------------------------------------------------------
+      int MediaEngineObsolete::setVoiceTransportParameters()
+      {
+        // No transport parameters for external transport.
+        return 0;
+      }
+      
+      //-----------------------------------------------------------------------
+      void MediaEngineObsolete::internalStartVideoCapture()
       {
         {
           AutoRecursiveLock lock(mLock);
           
-          ZS_LOG_DEBUG(log("start video capture - camera type: ") + (mCaptureIdx == 0 ? "back" : "front"))
+          ZS_LOG_DEBUG(log("start video capture - camera type: ") + (mCameraType == CameraType_Back ? "back" : "front"))
           
           const unsigned int KMaxDeviceNameLength = 128;
           const unsigned int KMaxUniqueIdLength = 256;
@@ -1657,6 +1729,21 @@ namespace openpeer
           memset(deviceName, 0, KMaxDeviceNameLength);
           char uniqueId[KMaxUniqueIdLength];
           memset(uniqueId, 0, KMaxUniqueIdLength);
+          uint32_t captureIdx;
+          
+          if (mCameraType == CameraType_Back)
+          {
+            captureIdx = 0;
+          }
+          else if (mCameraType == CameraType_Front)
+          {
+            captureIdx = 1;
+          }
+          else
+          {
+            ZS_LOG_ERROR(Detail, log("camera type is not set"))
+            return;
+          }
           
 #if defined(TARGET_OS_IPHONE) || defined(__QNX__)
           void *captureView = mCaptureRenderView;
@@ -1676,7 +1763,7 @@ namespace openpeer
             return;
           }
           
-          mError = devInfo->GetDeviceName(mCaptureIdx, deviceName,
+          mError = devInfo->GetDeviceName(captureIdx, deviceName,
                                           KMaxDeviceNameLength, uniqueId,
                                           KMaxUniqueIdLength);
           if (mError != 0) {
@@ -1707,7 +1794,25 @@ namespace openpeer
           }
           
 #ifdef TARGET_OS_IPHONE
-          mError = mVideoCapture->SetDefaultCapturedFrameOrientation(mCaptureId, mDefaultVideoOrientation);
+          webrtc::CapturedFrameOrientation defaultOrientation;
+          switch (mDefaultVideoOrientation) {
+            case IMediaEngineObsolete::VideoOrientation_LandscapeLeft:
+              defaultOrientation = webrtc::CapturedFrameOrientation_LandscapeLeft;
+              break;
+            case IMediaEngineObsolete::VideoOrientation_PortraitUpsideDown:
+              defaultOrientation = webrtc::CapturedFrameOrientation_PortraitUpsideDown;
+              break;
+            case IMediaEngineObsolete::VideoOrientation_LandscapeRight:
+              defaultOrientation = webrtc::CapturedFrameOrientation_LandscapeRight;
+              break;
+            case IMediaEngineObsolete::VideoOrientation_Portrait:
+              defaultOrientation = webrtc::CapturedFrameOrientation_Portrait;
+              break;
+            default:
+              defaultOrientation = webrtc::CapturedFrameOrientation_LandscapeLeft;
+              break;
+          }
+          mError = mVideoCapture->SetDefaultCapturedFrameOrientation(mCaptureId, defaultOrientation);
           if (mError != 0) {
             ZS_LOG_ERROR(Detail, log("failed to set default orientation on video capture device (error: ") + Stringize<INT>(mVideoBase->LastError()).string() + ")")
             return;
@@ -1760,7 +1865,7 @@ namespace openpeer
       }
       
       //-----------------------------------------------------------------------
-      void MediaEngine::internalStopVideoCapture()
+      void MediaEngineObsolete::internalStopVideoCapture()
       {
         {
           AutoRecursiveLock lock(mLock);
@@ -1798,22 +1903,30 @@ namespace openpeer
       }
       
       //-----------------------------------------------------------------------
-      void MediaEngine::internalStartSendVideoChannel()
+      void MediaEngineObsolete::internalStartVideoChannel()
       {
         {
           AutoRecursiveLock lock(mLock);
           
-          ZS_LOG_DEBUG(log("start send video channel"))
-
-          if (mVideoChannel == OPENPEER_MEDIA_ENGINE_INVALID_CHANNEL) {
-            mError = mVideoBase->CreateChannel(mVideoChannel);
-            if (mError != 0) {
-              ZS_LOG_ERROR(Detail, log("could not create video channel (error: ") + Stringize<INT>(mVideoBase->LastError()).string() + ")")
-              return;
-            }
+          ZS_LOG_DEBUG(log("start video channel"))
+          
+#if defined(TARGET_OS_IPHONE) || defined(__QNX__)
+          void *channelView = mChannelRenderView;
+#else
+          void *channelView = NULL;
+#endif
+          if (channelView == NULL) {
+            ZS_LOG_ERROR(Detail, log("channel view is not set"))
+            return;
           }
           
-          mError = registerVideoSendTransport();
+          mError = mVideoBase->CreateChannel(mVideoChannel);
+          if (mError != 0) {
+            ZS_LOG_ERROR(Detail, log("could not create video channel (error: ") + Stringize<INT>(mVideoBase->LastError()).string() + ")")
+            return;
+          }
+          
+          mError = registerVideoTransport();
           if (0 != mError)
             return;
           
@@ -1848,72 +1961,6 @@ namespace openpeer
             return;
           }
           
-          webrtc::VideoCodec videoCodec;
-          memset(&videoCodec, 0, sizeof(VideoCodec));
-          for (int idx = 0; idx < mVideoCodec->NumberOfCodecs(); idx++) {
-            mError = mVideoCodec->GetCodec(idx, videoCodec);
-            if (mError != 0) {
-              ZS_LOG_ERROR(Detail, log("failed to get video codec (error: ") + Stringize<INT>(mVideoBase->LastError()).string() + ")")
-              return;
-            }
-            if (videoCodec.codecType == webrtc::kVideoCodecVP8) {
-              mError = mVideoCodec->SetSendCodec(mVideoChannel, videoCodec);
-              if (mError != 0) {
-                ZS_LOG_ERROR(Detail, log("failed to set send video codec (error: ") + Stringize<INT>(mVideoBase->LastError()).string() + ")")
-                return;
-              }
-              break;
-            }
-          }
-          
-          mError = setVideoCodecParameters();
-          if (mError != 0) {
-            return;
-          }
-          
-          mError = setVideoSendTransportParameters();
-          if (mError != 0)
-            return;
-          
-          mError = mVideoBase->StartSend(mVideoChannel);
-          if (mError != 0) {
-            ZS_LOG_ERROR(Detail, log("failed to start sending video (error: ") + Stringize<INT>(mVideoBase->LastError()).string() + ")")
-            return;
-          }
-        }
-        
-        {
-          AutoRecursiveLock lock(mMediaEngineReadyLock);
-          mVideoEngineReady = true;
-        }
-      }
-      
-      //-----------------------------------------------------------------------
-      void MediaEngine::internalStartReceiveVideoChannel()
-      {
-        {
-          AutoRecursiveLock lock(mLock);
-          
-          ZS_LOG_DEBUG(log("start receive video channel"))
-          
-#if defined(TARGET_OS_IPHONE) || defined(__QNX__)
-          void *channelView = mChannelRenderView;
-#else
-          void *channelView = NULL;
-#endif
-          if (channelView == NULL) {
-            ZS_LOG_ERROR(Detail, log("channel view is not set"))
-            return;
-          }
-          
-          if (mVideoChannel == OPENPEER_MEDIA_ENGINE_INVALID_CHANNEL) {
-            mError = mVideoBase->CreateChannel(mVideoChannel);
-            if (mError != 0) {
-              ZS_LOG_ERROR(Detail, log("could not create video channel (error: ") + Stringize<INT>(mVideoBase->LastError()).string() + ")")
-              return;
-            }
-          }
-          
 #ifdef TARGET_OS_IPHONE
           OutputAudioRoute route;
           mError = mVoiceHardware->GetOutputAudioRoute(route);
@@ -1938,9 +1985,38 @@ namespace openpeer
             return;
           }
           
-          mError = setVideoReceiveTransportParameters();
+          webrtc::VideoCodec videoCodec;
+          memset(&videoCodec, 0, sizeof(VideoCodec));
+          for (int idx = 0; idx < mVideoCodec->NumberOfCodecs(); idx++) {
+            mError = mVideoCodec->GetCodec(idx, videoCodec);
+            if (mError != 0) {
+              ZS_LOG_ERROR(Detail, log("failed to get video codec (error: ") + Stringize<INT>(mVideoBase->LastError()).string() + ")")
+              return;
+            }
+            if (videoCodec.codecType == webrtc::kVideoCodecVP8) {
+              mError = mVideoCodec->SetSendCodec(mVideoChannel, videoCodec);
+              if (mError != 0) {
+                ZS_LOG_ERROR(Detail, log("failed to set send video codec (error: ") + Stringize<INT>(mVideoBase->LastError()).string() + ")")
+                return;
+              }
+              break;
+            }
+          }
+          
+          mError = setVideoCodecParameters();
+          if (mError != 0) {
+            return;
+          }
+          
+          mError = setVideoTransportParameters();
           if (mError != 0)
             return;
+          
+          mError = mVideoBase->StartSend(mVideoChannel);
+          if (mError != 0) {
+            ZS_LOG_ERROR(Detail, log("failed to start sending video (error: ") + Stringize<INT>(mVideoBase->LastError()).string() + ")")
+            return;
+          }
           
           mError = mVideoBase->StartReceive(mVideoChannel);
           if (mError != 0) {
@@ -1961,7 +2037,7 @@ namespace openpeer
       }
       
       //-----------------------------------------------------------------------
-      void MediaEngine::internalStopSendVideoChannel()
+      void MediaEngineObsolete::internalStopVideoChannel()
       {
         {
           AutoRecursiveLock lock(mMediaEngineReadyLock);
@@ -1971,11 +2047,26 @@ namespace openpeer
         {
           AutoRecursiveLock lock(mLock);
           
-          ZS_LOG_DEBUG(log("stop send video channel"))
-
+          ZS_LOG_DEBUG(log("stop video channel"))
+          
+          mError = mVideoRender->StopRender(mVideoChannel);
+          if (mError != 0) {
+            ZS_LOG_ERROR(Detail, log("failed to stop rendering video channel (error: ") + Stringize<INT>(mVideoBase->LastError()).string() + ")")
+            return;
+          }
+          mError = mVideoRender->RemoveRenderer(mVideoChannel);
+          if (mError != 0) {
+            ZS_LOG_ERROR(Detail, log("failed to remove renderer for video channel (error: ") + Stringize<INT>(mVideoBase->LastError()).string() + ")")
+            return;
+          }
           mError = mVideoBase->StopSend(mVideoChannel);
           if (mError != 0) {
             ZS_LOG_ERROR(Detail, log("failed to stop sending video (error: ") + Stringize<INT>(mVideoBase->LastError()).string() + ")")
+            return;
+          }
+          mError = mVideoBase->StopReceive(mVideoChannel);
+          if (mError != 0) {
+            ZS_LOG_ERROR(Detail, log("failed to stop receiving video (error: ") + Stringize<INT>(mVideoBase->LastError()).string() + ")")
             return;
           }
           mError = mVideoCapture->DisconnectCaptureDevice(mVideoChannel);
@@ -1983,7 +2074,7 @@ namespace openpeer
             ZS_LOG_ERROR(Detail, log("failed to disconnect capture device from video channel (error: ") + Stringize<INT>(mVideoBase->LastError()).string() + ")")
             return;
           }
-          mError = deregisterVideoSendTransport();
+          mError = deregisterVideoTransport();
           if (0 != mError)
             return;
           mError = mVideoBase->DeleteChannel(mVideoChannel);
@@ -1997,51 +2088,31 @@ namespace openpeer
       }
       
       //-----------------------------------------------------------------------
-      void MediaEngine::internalStopReceiveVideoChannel()
-      {
-        {
-          AutoRecursiveLock lock(mMediaEngineReadyLock);
-          mVideoEngineReady = false;
-        }
-        
-        {
-          AutoRecursiveLock lock(mLock);
-          
-          ZS_LOG_DEBUG(log("stop receive video channel"))
-          
-          mError = mVideoRender->StopRender(mVideoChannel);
-          if (mError != 0) {
-            ZS_LOG_ERROR(Detail, log("failed to stop rendering video channel (error: ") + Stringize<INT>(mVideoBase->LastError()).string() + ")")
-            return;
-          }
-          mError = mVideoRender->RemoveRenderer(mVideoChannel);
-          if (mError != 0) {
-            ZS_LOG_ERROR(Detail, log("failed to remove renderer for video channel (error: ") + Stringize<INT>(mVideoBase->LastError()).string() + ")")
-            return;
-          }
-          mError = mVideoBase->StopReceive(mVideoChannel);
-          if (mError != 0) {
-            ZS_LOG_ERROR(Detail, log("failed to stop receiving video (error: ") + Stringize<INT>(mVideoBase->LastError()).string() + ")")
-            return;
-          }
-          mError = mVideoBase->DeleteChannel(mVideoChannel);
-          if (mError != 0) {
-            ZS_LOG_ERROR(Detail, log("failed to delete video channel (error: ") + Stringize<INT>(mVideoBase->LastError()).string() + ")")
-            return;
-          }
-          
-          mVideoChannel = OPENPEER_MEDIA_ENGINE_INVALID_CHANNEL;
-        }
-      }
-      
-      //-----------------------------------------------------------------------
-      void MediaEngine::internalStartRecordVideoCapture(String videoRecordFile, bool saveVideoToLibrary)
+      void MediaEngineObsolete::internalStartRecordVideoCapture(String videoRecordFile, bool saveVideoToLibrary)
       {
         AutoRecursiveLock lock(mLock);
         
         ZS_LOG_DEBUG(log("start video capture recording"))
         
-        mError = mVideoCapture->SetCapturedFrameLockedOrientation(mCaptureId, mRecordVideoOrientation);
+        webrtc::CapturedFrameOrientation recordOrientation;
+        switch (mRecordVideoOrientation) {
+          case IMediaEngineObsolete::VideoOrientation_LandscapeLeft:
+            recordOrientation = webrtc::CapturedFrameOrientation_LandscapeLeft;
+            break;
+          case IMediaEngineObsolete::VideoOrientation_PortraitUpsideDown:
+            recordOrientation = webrtc::CapturedFrameOrientation_PortraitUpsideDown;
+            break;
+          case IMediaEngineObsolete::VideoOrientation_LandscapeRight:
+            recordOrientation = webrtc::CapturedFrameOrientation_LandscapeRight;
+            break;
+          case IMediaEngineObsolete::VideoOrientation_Portrait:
+            recordOrientation = webrtc::CapturedFrameOrientation_Portrait;
+            break;
+          default:
+            recordOrientation = webrtc::CapturedFrameOrientation_LandscapeLeft;
+            break;
+        }
+        mError = mVideoCapture->SetCapturedFrameLockedOrientation(mCaptureId, recordOrientation);
         if (mError != 0) {
           ZS_LOG_ERROR(Detail, log("failed to set record orientation on video capture device (error: ") + Stringize<INT>(mVideoBase->LastError()).string() + ")")
           return;
@@ -2092,7 +2163,7 @@ namespace openpeer
       }
       
       //-----------------------------------------------------------------------
-      void MediaEngine::internalStopRecordVideoCapture()
+      void MediaEngineObsolete::internalStopRecordVideoCapture()
       {
         AutoRecursiveLock lock(mLock);
         
@@ -2112,56 +2183,14 @@ namespace openpeer
         
         try {
           if (mDelegate)
-            mDelegate->onMediaEngineVideoCaptureRecordStopped(0);
-        } catch (IMediaEngineDelegateProxy::Exceptions::DelegateGone &) {
+            mDelegate->onMediaEngineVideoCaptureRecordStopped();
+        } catch (IMediaEngineDelegateObsoleteProxy::Exceptions::DelegateGone &) {
           ZS_LOG_WARNING(Detail, log("delegate gone"))
         }
       }
       
       //-----------------------------------------------------------------------
-      int MediaEngine::registerVoiceSendTransport()
-      {
-        if (NULL != mVoiceTransport) {
-          mError = mVoiceNetwork->RegisterExternalTransport(mVoiceChannel, *mVoiceTransport);
-          if (0 != mError) {
-            ZS_LOG_ERROR(Detail, log("failed to register voice external transport (error: ") + Stringize<INT>(mVoiceBase->LastError()).string() + ")")
-            return mError;
-          }
-        } else {
-          ZS_LOG_ERROR(Detail, log("external voice transport is not set"))
-          return -1;
-        }
-        
-        return 0;
-      }
-      
-      //-----------------------------------------------------------------------
-      int MediaEngine::deregisterVoiceSendTransport()
-      {
-        mError = mVoiceNetwork->DeRegisterExternalTransport(mVoiceChannel);
-        if (mError != 0) {
-          ZS_LOG_ERROR(Detail, log("failed to deregister voice external transport (error: ") + Stringize<INT>(mVoiceBase->LastError()).string() + ")")
-          return mError;
-        }
-        return 0;
-      }
-
-      //-----------------------------------------------------------------------
-      int MediaEngine::setVoiceSendTransportParameters()
-      {
-        // No transport parameters for external transport.
-        return 0;
-      }
-      
-      //-----------------------------------------------------------------------
-      int MediaEngine::setVoiceReceiveTransportParameters()
-      {
-        // No transport parameters for external transport.
-        return 0;
-      }
-      
-      //-----------------------------------------------------------------------
-      int MediaEngine::registerVideoSendTransport()
+      int MediaEngineObsolete::registerVideoTransport()
       {
         if (NULL != mVideoTransport) {
           mError = mVideoNetwork->RegisterSendTransport(mVideoChannel, *mVideoTransport);
@@ -2177,7 +2206,7 @@ namespace openpeer
       }
       
       //-----------------------------------------------------------------------
-      int MediaEngine::deregisterVideoSendTransport()
+      int MediaEngineObsolete::deregisterVideoTransport()
       {
         mError = mVideoNetwork->DeregisterSendTransport(mVideoChannel);
         if (mError != 0) {
@@ -2188,21 +2217,14 @@ namespace openpeer
       }
       
       //-----------------------------------------------------------------------
-      int MediaEngine::setVideoSendTransportParameters()
+      int MediaEngineObsolete::setVideoTransportParameters()
       {
         // No transport parameters for external transport.
         return 0;
       }
       
       //-----------------------------------------------------------------------
-      int MediaEngine::setVideoReceiveTransportParameters()
-      {
-        // No transport parameters for external transport.
-        return 0;
-      }
-      
-      //-----------------------------------------------------------------------
-      int MediaEngine::getVideoCaptureParameters(webrtc::RotateCapturedFrame orientation, int& width, int& height, int& maxFramerate, int& maxBitrate)
+      int MediaEngineObsolete::getVideoCaptureParameters(webrtc::RotateCapturedFrame orientation, int& width, int& height, int& maxFramerate, int& maxBitrate)
       {
 #ifdef TARGET_OS_IPHONE
         String iPadString("iPad");
@@ -2215,7 +2237,7 @@ namespace openpeer
         String iPhone5String("iPhone5");
         String iPodString("iPod");
         String iPod4String("iPod4,1");
-        if (mCaptureIdx == 0) {
+        if (mCameraType == CameraType_Back) {
           if (orientation == webrtc::RotateCapturedFrame_0 || orientation == webrtc::RotateCapturedFrame_180) {
             if (mMachineName.compare(0, iPod4String.size(), iPod4String) >= 0) {
               width = 320;
@@ -2297,7 +2319,7 @@ namespace openpeer
               return -1;
             }
           }
-        } else if (mCaptureIdx == 1) {
+        } else if (mCameraType == CameraType_Front) {
           if (orientation == webrtc::RotateCapturedFrame_0 || orientation == webrtc::RotateCapturedFrame_180) {
             if (mMachineName.compare(0, iPod4String.size(), iPod4String) >= 0) {
               width = 320;
@@ -2413,48 +2435,7 @@ namespace openpeer
       }
       
       //-----------------------------------------------------------------------
-      int MediaEngine::setVideoCodecParameters()
-      {
-#ifdef TARGET_OS_IPHONE
-        webrtc::RotateCapturedFrame orientation;
-        mError = mVideoCapture->GetOrientation(mDeviceUniqueId, orientation);
-        if (mError != 0) {
-          ZS_LOG_ERROR(Detail, log("failed to get orientation from video capture device (error: ") + Stringize<INT>(mVideoBase->LastError()).string() + ")")
-          return mError;
-        }
-#else
-        webrtc::RotateCapturedFrame orientation = webrtc::RotateCapturedFrame_0;
-#endif
-        
-        int width = 0, height = 0, maxFramerate = 0, maxBitrate = 0;
-        mError = getVideoCaptureParameters(orientation, width, height, maxFramerate, maxBitrate);
-        if (mError != 0)
-          return mError;
-        
-        webrtc::VideoCodec videoCodec;
-        memset(&videoCodec, 0, sizeof(VideoCodec));
-        mError = mVideoCodec->GetSendCodec(mVideoChannel, videoCodec);
-        if (mError != 0) {
-          ZS_LOG_ERROR(Detail, log("failed to get video codec (error: ") + Stringize<INT>(mVideoBase->LastError()).string() + ")")
-          return mError;
-        }
-        videoCodec.width = width;
-        videoCodec.height = height;
-        videoCodec.maxFramerate = maxFramerate;
-        videoCodec.maxBitrate = maxBitrate;
-        mError = mVideoCodec->SetSendCodec(mVideoChannel, videoCodec);
-        if (mError != 0) {
-          ZS_LOG_ERROR(Detail, log("failed to set send video codec (error: ") + Stringize<INT>(mVideoBase->LastError()).string() + ")")
-          return mError;
-        }
-        
-        ZS_LOG_DEBUG(log("video codec size - width: ") + Stringize<INT>(width).string() + ", height: " + Stringize<INT>(height).string())
-        
-        return 0;
-      }
-
-      //-----------------------------------------------------------------------
-      int MediaEngine::setVideoCaptureRotation()
+      int MediaEngineObsolete::setVideoCaptureRotation()
       {
         webrtc::RotateCapturedFrame orientation;
         mError = mVideoCapture->GetOrientation(mDeviceUniqueId, orientation);
@@ -2494,7 +2475,48 @@ namespace openpeer
       }
       
       //-----------------------------------------------------------------------
-      webrtc::EcModes MediaEngine::getEcMode()
+      int MediaEngineObsolete::setVideoCodecParameters()
+      {
+#ifdef TARGET_OS_IPHONE
+        webrtc::RotateCapturedFrame orientation;
+        mError = mVideoCapture->GetOrientation(mDeviceUniqueId, orientation);
+        if (mError != 0) {
+          ZS_LOG_ERROR(Detail, log("failed to get orientation from video capture device (error: ") + Stringize<INT>(mVideoBase->LastError()).string() + ")")
+          return mError;
+        }
+#else
+        webrtc::RotateCapturedFrame orientation = webrtc::RotateCapturedFrame_0;
+#endif
+        
+        int width = 0, height = 0, maxFramerate = 0, maxBitrate = 0;
+        mError = getVideoCaptureParameters(orientation, width, height, maxFramerate, maxBitrate);
+        if (mError != 0)
+          return mError;
+        
+        webrtc::VideoCodec videoCodec;
+        memset(&videoCodec, 0, sizeof(VideoCodec));
+        mError = mVideoCodec->GetSendCodec(mVideoChannel, videoCodec);
+        if (mError != 0) {
+          ZS_LOG_ERROR(Detail, log("failed to get video codec (error: ") + Stringize<INT>(mVideoBase->LastError()).string() + ")")
+          return mError;
+        }
+        videoCodec.width = width;
+        videoCodec.height = height;
+        videoCodec.maxFramerate = maxFramerate;
+        videoCodec.maxBitrate = maxBitrate;
+        mError = mVideoCodec->SetSendCodec(mVideoChannel, videoCodec);
+        if (mError != 0) {
+          ZS_LOG_ERROR(Detail, log("failed to set send video codec (error: ") + Stringize<INT>(mVideoBase->LastError()).string() + ")")
+          return mError;
+        }
+        
+        ZS_LOG_DEBUG(log("video codec size - width: ") + Stringize<INT>(width).string() + ", height: " + Stringize<INT>(height).string())
+        
+        return 0;
+      }
+      
+      //-----------------------------------------------------------------------
+      webrtc::EcModes MediaEngineObsolete::getEcMode()
       {
 #ifdef TARGET_OS_IPHONE
         String iPadString("iPad");
@@ -2534,21 +2556,21 @@ namespace openpeer
       }
       
       //-----------------------------------------------------------------------
-      String MediaEngine::log(const char *message) const
+      String MediaEngineObsolete::log(const char *message) const
       {
-        return String("MediaEngine [") + Stringize<typeof(mID)>(mID).string() + "] " + message;
+        return String("MediaEngineObsolete [") + Stringize<typeof(mID)>(mID).string() + "] " + message;
       }
       
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
-      #pragma mark
-      #pragma mark MediaEngine::RedirectTransport
-      #pragma mark
+#pragma mark
+#pragma mark MediaEngineObsolete::RedirectTransport
+#pragma mark
       
       //-----------------------------------------------------------------------
-      MediaEngine::RedirectTransport::RedirectTransport(const char *transportType) :
+      MediaEngineObsolete::RedirectTransport::RedirectTransport(const char *transportType) :
       mID(zsLib::createPUID()),
       mTransportType(transportType),
       mTransport(0)
@@ -2559,12 +2581,12 @@ namespace openpeer
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
-      #pragma mark
-      #pragma mark MediaEngine::RedirectTransport => webrtc::Transport
-      #pragma mark
+#pragma mark
+#pragma mark MediaEngineObsolete::RedirectTransport => webrtc::Transport
+#pragma mark
       
       //-----------------------------------------------------------------------
-      int MediaEngine::RedirectTransport::SendPacket(int channel, const void *data, int len)
+      int MediaEngineObsolete::RedirectTransport::SendPacket(int channel, const void *data, int len)
       {
         Transport *transport = NULL;
         {
@@ -2580,7 +2602,7 @@ namespace openpeer
       }
       
       //-----------------------------------------------------------------------
-      int MediaEngine::RedirectTransport::SendRTCPPacket(int channel, const void *data, int len)
+      int MediaEngineObsolete::RedirectTransport::SendRTCPPacket(int channel, const void *data, int len)
       {
         Transport *transport = NULL;
         {
@@ -2599,12 +2621,12 @@ namespace openpeer
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
-      #pragma mark
-      #pragma mark MediaEngine::RedirectTransport => friend MediaEngine
-      #pragma mark
+#pragma mark
+#pragma mark MediaEngineObsolete::RedirectTransport => friend MediaEngineObsolete
+#pragma mark
       
       //-----------------------------------------------------------------------
-      void MediaEngine::RedirectTransport::redirect(Transport *transport)
+      void MediaEngineObsolete::RedirectTransport::redirect(Transport *transport)
       {
         AutoRecursiveLock lock(mLock);
         mTransport = transport;
@@ -2614,17 +2636,63 @@ namespace openpeer
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
       //-----------------------------------------------------------------------
-      #pragma mark
-      #pragma mark MediaEngine::RedirectTransport => (internal)
-      #pragma mark
+#pragma mark
+#pragma mark MediaEngineObsolete::RedirectTransport => (internal)
+#pragma mark
       
       //-----------------------------------------------------------------------
-      String MediaEngine::RedirectTransport::log(const char *message)
+      String MediaEngineObsolete::RedirectTransport::log(const char *message)
       {
-        return String("MediaEngine::RedirectTransport (") + mTransportType + ") [" + Stringize<typeof(mID)>(mID).string() + "] " + message;
+        return String("MediaEngineObsolete::RedirectTransport (") + mTransportType + ") [" + Stringize<typeof(mID)>(mID).string() + "] " + message;
       }
-
-
+    }
+    
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
+#pragma mark
+#pragma mark IMediaEngine
+#pragma mark
+    
+    //-------------------------------------------------------------------------
+    const char *IMediaEngineObsolete::toString(CameraTypes type)
+    {
+      switch (type) {
+        case CameraType_None:   return "None";
+        case CameraType_Front:  return "Front";
+        case CameraType_Back:   return "Back";
+      }
+      return "UNDEFINED";
+    }
+    
+    //---------------------------------------------------------------------------
+    const char *IMediaEngineObsolete::toString(VideoOrientations orientation)
+    {
+      switch (orientation) {
+        case VideoOrientation_LandscapeLeft:        return "Landscape left";
+        case VideoOrientation_PortraitUpsideDown:   return "Portrait upside down";
+        case VideoOrientation_LandscapeRight:       return "Landscape right";
+        case VideoOrientation_Portrait:             return "Portrait";
+      }
+      return "UNDEFINED";
+    }
+    
+    //-------------------------------------------------------------------------
+    const char *IMediaEngineObsolete::toString(OutputAudioRoutes route)
+    {
+      switch (route) {
+        case OutputAudioRoute_Headphone:        return "Headphone";
+        case OutputAudioRoute_BuiltInReceiver:  return "Built in receiver";
+        case OutputAudioRoute_BuiltInSpeaker:   return "Built in speaker";
+      }
+      return "UNDEFINED";
+    }
+    
+    //-------------------------------------------------------------------------
+    IMediaEngineObsoletePtr IMediaEngineObsolete::singleton()
+    {
+      return internal::MediaEngineObsolete::singleton();
     }
   }
 }
