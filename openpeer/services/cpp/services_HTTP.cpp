@@ -622,6 +622,7 @@ namespace openpeer
         mURL(url),
         mMimeType(postDataMimeType),
         mTimeout(timeout),
+        mErrorBuffer(CURL_ERROR_SIZE),
         mCurl(NULL),
         mResponseCode(0),
         mHeaders(NULL),
@@ -832,6 +833,7 @@ namespace openpeer
           return;
         }
 
+        curl_easy_setopt(mCurl, CURLOPT_ERRORBUFFER, mErrorBuffer.BytePtr());
         curl_easy_setopt(mCurl, CURLOPT_URL, mURL.c_str());
         if (!mUserAgent.isEmpty()) {
           curl_easy_setopt(mCurl, CURLOPT_USERAGENT, mUserAgent.c_str());
@@ -947,6 +949,7 @@ namespace openpeer
           ZS_LOG_BASIC(log("INFO") + ", success=" + (successful ? "TRUE" : "FALSE"))
           ZS_LOG_BASIC(log("INFO") + ", HTTP response code=" + string(mResponseCode))
           ZS_LOG_BASIC(log("INFO") + ", CURL result code=" + string(mResultCode))
+          ZS_LOG_BASIC(log("INFO") + ", CURL error message=" + (CSTR)(mErrorBuffer.BytePtr()))
           ZS_LOG_BASIC(log("----------------------------------HTTP COMPLETE--------------------------------"))
         }
         cleanupCurl();

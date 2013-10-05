@@ -261,6 +261,7 @@ namespace openpeer
           Duration mTimeout;
 
           SecureByteBlock mPostData;
+          SecureByteBlock mErrorBuffer;
 
           CURL *mCurl;
           long mResponseCode;
