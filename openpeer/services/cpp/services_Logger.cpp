@@ -710,8 +710,8 @@ namespace openpeer
                   )
         {
           mOutgoingMode = true;
-          mBackupStringToSendUponConnection = String(sendStringUponConnection);
-          mServerLookupName = String(serverHostWithPort);
+          mOriginalStringToSendUponConnection = String(sendStringUponConnection);
+          mOriginalServer = mServerLookupName = String(serverHostWithPort);
 
           String::size_type pos = mServerLookupName.find(":");
           if (pos != mServerLookupName.npos) {
@@ -828,13 +828,13 @@ namespace openpeer
         //---------------------------------------------------------------------
         String getServer() const
         {
-          return mBackupStringToSendUponConnection;
+          return mOriginalServer;
         }
 
         //---------------------------------------------------------------------
         String getSendStringUponConnection() const
         {
-          return mBackupStringToSendUponConnection;
+          return mOriginalStringToSendUponConnection;
         }
 
         //---------------------------------------------------------------------
@@ -1262,7 +1262,7 @@ namespace openpeer
             return;
           }
 
-          mStringToSendUponConnection = mBackupStringToSendUponConnection;
+          mStringToSendUponConnection = mOriginalStringToSendUponConnection;
 
           mTelnetSocket = Socket::createTCP();
           try {
@@ -1416,10 +1416,12 @@ namespace openpeer
         bool mConnected;
         IDNSQueryPtr mOutgoingServerQuery;
         String mStringToSendUponConnection;
-        String mBackupStringToSendUponConnection;
 
         String mServerLookupName;
         IDNS::SRVResultPtr mServers;
+
+        String mOriginalServer;
+        String mOriginalStringToSendUponConnection;
       };
 
       //-----------------------------------------------------------------------

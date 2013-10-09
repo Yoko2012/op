@@ -851,8 +851,12 @@ namespace openpeer
         //---------------------------------------------------------------------
         void report()
         {
-          if (!mALookup->isComplete()) return;
-          if (!mAAAALookup->isComplete()) return;
+          if (mALookup) {
+            if (!mALookup->isComplete()) return;
+          }
+          if (mAAAALookup) {
+            if (!mAAAALookup->isComplete()) return;
+          }
 
           if (!mDelegate) return;
 
@@ -907,16 +911,51 @@ namespace openpeer
         }
 
         //---------------------------------------------------------------------
-        virtual bool hasResult() const {return (mALookup->hasResult()) || (mAAAALookup->hasResult());}
+        virtual bool hasResult() const
+        {
+          AutoRecursiveLock lock(mLock);
+
+          bool result = false;
+          if (mALookup) {
+            result = result || mALookup->hasResult();
+          }
+          if (mAAAALookup) {
+            result = result || mAAAALookup->hasResult();
+          }
+          return result;
+        }
 
         //---------------------------------------------------------------------
-        virtual bool isComplete() const {return (mALookup->isComplete()) && (mAAAALookup->isComplete());}
+        virtual bool isComplete() const {
+          AutoRecursiveLock lock(mLock);
+
+          bool complete = true;
+          if (mALookup) {
+            complete = complete && mALookup->isComplete();
+          }
+          if (mAAAALookup) {
+            complete = complete && mAAAALookup->isComplete();
+          }
+          return complete;
+        }
 
         //---------------------------------------------------------------------
-        virtual AResultPtr getA() const {return mALookup->getA();}
+        virtual AResultPtr getA() const
+        {
+          AutoRecursiveLock lock(mLock);
+
+          if (!mALookup) return AResultPtr();
+          return mALookup->getA();
+        }
 
         //---------------------------------------------------------------------
-        virtual AAAAResultPtr getAAAA() const {return mAAAALookup->getAAAA();}
+        virtual AAAAResultPtr getAAAA() const
+        {
+          AutoRecursiveLock lock(mLock);
+
+          if (!mAAAALookup) return AAAAResultPtr();
+          return mAAAALookup->getAAAA();
+        }
 
         //---------------------------------------------------------------------
         virtual SRVResultPtr getSRV() const {return SRVResultPtr();}
@@ -939,7 +978,7 @@ namespace openpeer
         #pragma mark DNSAorAAAAQuery => (data)
         #pragma mark
 
-        RecursiveLock mLock;
+        mutable RecursiveLock mLock;
         PUID mID;
 
         DNSAorAAAAQueryWeakPtr mThisWeak;
