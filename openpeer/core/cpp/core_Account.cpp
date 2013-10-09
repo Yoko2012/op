@@ -1288,30 +1288,30 @@ namespace openpeer
         switch (state) {
           case IServiceNamespaceGrantSession::SessionState_Pending:
           {
-            ZS_LOG_DEBUG(log("namespace grant session is pending"))
+            ZS_LOG_TRACE(log("namespace grant session is pending"))
             setState(AccountState_Pending);
             return false;
           }
           case IServiceNamespaceGrantSession::SessionState_WaitingForBrowserWindowToBeLoaded:
           {
-            ZS_LOG_DEBUG(log("namespace grant is waiting for the browser window to be loaded"))
+            ZS_LOG_TRACE(log("namespace grant is waiting for the browser window to be loaded"))
             setState(AccountState_WaitingForBrowserWindowToBeLoaded);
             return false;
           }
           case IServiceNamespaceGrantSession::SessionState_WaitingForBrowserWindowToBeMadeVisible:
           {
-            ZS_LOG_DEBUG(log("namespace grant is waiting for browser window to be made visible"))
+            ZS_LOG_TRACE(log("namespace grant is waiting for browser window to be made visible"))
             setState(AccountState_WaitingForBrowserWindowToBeMadeVisible);
             return false;
           }
           case IServiceNamespaceGrantSession::SessionState_WaitingForBrowserWindowToClose:
           {
-            ZS_LOG_DEBUG(log("namespace grant is waiting for browser window to close"))
+            ZS_LOG_TRACE(log("namespace grant is waiting for browser window to close"))
             setState(AccountState_WaitingForBrowserWindowToClose);
             return false;
           }
           case IServiceNamespaceGrantSession::SessionState_Ready: {
-            ZS_LOG_DEBUG(log("namespace grant is ready"))
+            ZS_LOG_TRACE(log("namespace grant is ready"))
             return true;
           }
           case IServiceNamespaceGrantSession::SessionState_Shutdown:  {

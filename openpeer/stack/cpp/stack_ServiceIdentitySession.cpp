@@ -953,6 +953,13 @@ namespace openpeer
       }
 
       //-----------------------------------------------------------------------
+      bool ServiceIdentitySession::isAssociated() const
+      {
+        AutoRecursiveLock lock(getLock());
+        return mAssociatedLockbox.lock();
+      }
+
+      //-----------------------------------------------------------------------
       void ServiceIdentitySession::notifyStateChanged()
       {
         AutoRecursiveLock lock(getLock());
@@ -2068,12 +2075,12 @@ namespace openpeer
       bool ServiceIdentitySession::stepLockboxUpdate()
       {
         if (mLockboxUpdated) {
-          ZS_LOG_TRACE(log("lockbox update already complete"))
+          ZS_LOG_TRACE(log("identity access lockbox update already complete"))
           return true;
         }
 
         if (mIdentityAccessLockboxUpdateMonitor) {
-          ZS_LOG_TRACE(log("lockbox update already in progress"))
+          ZS_LOG_TRACE(log("identity access lockbox update already in progress"))
           return false;
         }
 
@@ -2149,7 +2156,7 @@ namespace openpeer
           return true;
         }
 
-        ZS_LOG_DEBUG(log("waiting for browser window to close"))
+        ZS_LOG_TRACE(log("waiting for browser window to close"))
 
         setState(SessionState_WaitingForBrowserWindowToClose);
 

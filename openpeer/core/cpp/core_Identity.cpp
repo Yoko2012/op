@@ -386,7 +386,7 @@ namespace openpeer
       //-----------------------------------------------------------------------
       void Identity::startRolodexDownload(const char *inLastDownloadedVersion)
       {
-        ZS_LOG_DEBUG(log("start rolodex download called") + ", identity session id=" + string(mSession->getID()))
+        ZS_LOG_DEBUG(log("start rolodex download called") + ", identity session id=" + string(mSession->getID()) + ", last downloaded=" + String(inLastDownloadedVersion))
         mSession->startRolodexDownload(inLastDownloadedVersion);
       }
 

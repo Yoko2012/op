@@ -938,7 +938,7 @@ namespace openpeer
           return true;
         }
 
-        ZS_LOG_DEBUG(log("waiting for browser window to close"))
+        ZS_LOG_TRACE(log("waiting for browser window to close"))
         setState(SessionState_WaitingForBrowserWindowToClose);
 
         return false;
