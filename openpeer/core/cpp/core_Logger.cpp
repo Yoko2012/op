@@ -254,6 +254,24 @@ namespace openpeer
     }
 
     //-------------------------------------------------------------------------
+    bool ILogger::isTelnetLoggerListening()
+    {
+      return services::ILogger::isTelnetLoggerListening();
+    }
+
+    //-------------------------------------------------------------------------
+    bool ILogger::isTelnetLoggerConnected()
+    {
+      return services::ILogger::isTelnetLoggerConnected();
+    }
+
+    //-------------------------------------------------------------------------
+    bool ILogger::isOutgoingTelnetLoggerConnected()
+    {
+      return services::ILogger::isOutgoingTelnetLoggerConnected();
+    }
+
+    //-------------------------------------------------------------------------
     void ILogger::uninstallStdOutLogger()
     {
       services::ILogger::uninstallStdOutLogger();

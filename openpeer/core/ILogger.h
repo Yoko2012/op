@@ -127,6 +127,25 @@ namespace openpeer
       static void uninstallDebuggerLogger();
 
       //-----------------------------------------------------------------------
+      // PURPOSE: Checks if the telnet logger is listening for incoming telnet
+      //          connections.
+      // RETURNS: true if telnet logger is listening for connections
+      static bool isTelnetLoggerListening();
+
+      //-----------------------------------------------------------------------
+      // PURPOSE: Checks if the telnet logger has a telnet client connected
+      //          to the telnet logger port
+      // RETURNS: true if telnet client is connected to telnet logger port
+      static bool isTelnetLoggerConnected();
+
+      //-----------------------------------------------------------------------
+      // PURPOSE: Checks if the outgoing telnet logger is connected to a telnet
+      //          logging server.
+      // RETURNS: true if outgoing telnet logger is connected to a telnet
+      //          logging server
+      static bool isOutgoingTelnetLoggerConnected();
+
+      //-----------------------------------------------------------------------
       // PURPOSE: Gets the unique ID for the application's subsystem
       //          (to pass into the log routine for GUI application logging)
       static SubsystemID getApplicationSubsystemID();
