@@ -1325,6 +1325,7 @@ namespace openpeer
       #pragma mark
       #pragma mark MediaEngine => ViECaptureObserver
       #pragma mark
+      
       //-------------------------------------------------------------------------
       void MediaEngine::BrightnessAlarm(const int capture_id, const webrtc::Brightness brightness)
       {
@@ -1913,6 +1914,13 @@ namespace openpeer
             ZS_LOG_ERROR(Detail, log("failed to stop video capturing (error: ") + string(mVideoBase->LastError()) + ")")
             return;
           }
+          
+          mError = mVideoCapture->DeregisterObserver(mCaptureId);
+          if (mError < 0) {
+            ZS_LOG_ERROR(Detail, log("failed to deregister video capture observer (error: ") + string(mVideoBase->LastError()) + ")")
+            return;
+          }
+
           mError = mVideoCapture->ReleaseCaptureDevice(mCaptureId);
           if (mError != 0) {
             ZS_LOG_ERROR(Detail, log("failed to release video capture device (error: ") + string(mVideoBase->LastError()) + ")")
@@ -2061,14 +2069,6 @@ namespace openpeer
           mVideoEngineReady = true;
         }
 #endif //ANDROID
-        
-        sleep(1);
-        
-        mError = mVideoRtpRtcp->RequestKeyFrame(mVideoChannel);
-        if (0 != mError) {
-          ZS_LOG_ERROR(Detail, log("failed to request key frame (error: ") + string(mVideoBase->LastError()) + ")")
-          return;
-        }
       }
       
       //-----------------------------------------------------------------------
