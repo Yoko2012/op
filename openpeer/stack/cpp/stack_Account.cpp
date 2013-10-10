@@ -2363,7 +2363,7 @@ namespace openpeer
             return false;
           }
 
-          mFinderDNSLookup = IDNS::lookupSRV(mThisWeak.lock(), srv, "_finder", "_tcp");
+          mFinderDNSLookup = IDNS::lookupSRV(mThisWeak.lock(), srv, "finder", "tcp");
           ZS_LOG_TRACE(log("performing DNS lookup on finder"))
           return false;
         }

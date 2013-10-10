@@ -315,6 +315,7 @@ namespace openpeer
       {
         for (EventList::iterator iter = mWaitingForRebuildList.begin(); iter != mWaitingForRebuildList.end(); ++iter)
         {
+          ZS_LOG_TRACE(log("monitor notify"))
           (*iter)->notify();
         }
         mWaitingForRebuildList.clear();
@@ -325,6 +326,7 @@ namespace openpeer
 
           HTTPQueryMap::iterator found = mPendingAddQueries.find(query->getID());
           if (found != mPendingAddQueries.end()) {
+            ZS_LOG_TRACE(log("removing query") + ", query=" + string(query->getID()))
             mPendingAddQueries.erase(found);
           }
 
@@ -332,6 +334,7 @@ namespace openpeer
           if (found != mQueries.end()) {
             CURL *curl = query->getCURL();
             if (NULL != curl) {
+              ZS_LOG_TRACE(log("removing multi query handle") + ", query=" + string(query->getID()))
               curl_multi_remove_handle(mMultiCurl, curl);
             }
             query->cleanupCurl();
@@ -339,6 +342,7 @@ namespace openpeer
             if (NULL != curl) {
               HTTPCurlMap::iterator foundCurl = mCurlMap.find(curl);
               if (foundCurl != mCurlMap.end()) {
+                ZS_LOG_TRACE(log("removing from curl handle map") + ", query=" + string(query->getID()))
                 mCurlMap.erase(curl);
               }
             }
@@ -352,11 +356,14 @@ namespace openpeer
           {
             HTTPQueryPtr &query = (*iter).second;
 
+            ZS_LOG_TRACE(log("pending query preparing") + ", query=" + string(query->getID()))
+
             query->prepareCurl();
             CURL *curl = query->getCURL();
 
             if (curl) {
               if (CURLM_OK != curl_multi_add_handle(mMultiCurl, curl)) {
+                ZS_LOG_ERROR(Detail, log("failed to add query handle to multi curl") + ", query=" + string(query->getID()))
                 curl_multi_remove_handle(mMultiCurl, curl);
                 query->cleanupCurl();
                 curl = NULL;
@@ -364,19 +371,22 @@ namespace openpeer
             }
 
             if (curl) {
+              ZS_LOG_TRACE(log("pending query remembering curl mapping") + ", query=" + string(query->getID()))
               mQueries[query->getID()] = query;
               mCurlMap[curl] = query;
             }
           }
+
           mPendingAddQueries.clear();
 
         } else {
           for (HTTPQueryMap::iterator iter = mPendingAddQueries.begin(); iter != mPendingAddQueries.end(); ++iter)
           {
             HTTPQueryPtr &query = (*iter).second;
+            ZS_LOG_WARNING(Debug, log("pending query being shutdown (because of shutdown)") + ", query=" + string(query->getID()))
             query->cleanupCurl();
-
           }
+
           mPendingAddQueries.clear();
 
           for (HTTPQueryMap::iterator iter = mQueries.begin(); iter != mQueries.end(); ++iter)
@@ -384,6 +394,7 @@ namespace openpeer
             HTTPQueryPtr &query = (*iter).second;
             CURL *curl = query->getCURL();
             if (curl) {
+              ZS_LOG_WARNING(Debug, log("pending query being removed from multi curl (because of shutdown)") + ", query=" + string(query->getID()))
               curl_multi_remove_handle(mMultiCurl, curl);
             }
             query->cleanupCurl();
@@ -415,11 +426,15 @@ namespace openpeer
 
           event = Event::create();
           mWaitingForRebuildList.push_back(event);                                        // socket handles cane be reused so we must ensure that the socket handles are rebuilt before returning
+          ZS_LOG_TRACE(log("waiting notify"))
 
           wakeUp();
         }
+
         if (event)
           event->wait();
+
+        ZS_LOG_TRACE(log("monitor begin for query") + ", query=" + string(query->getID()))
       }
 
       //-----------------------------------------------------------------------
@@ -438,6 +453,8 @@ namespace openpeer
         }
         if (event)
           event->wait();
+
+        ZS_LOG_TRACE(log("monitor end for query") + ", query=" + string(query->getID()))
       }
 
       //-----------------------------------------------------------------------
@@ -520,6 +537,8 @@ namespace openpeer
 
           int result = select(zsLib::INVALID_SOCKET == highestSocket ? 0 : (highestSocket+1), &fdread, &fdwrite, &fdexcep, &timeout);
 
+          ZS_LOG_TRACE(log("curl multi select") + ", result=" + string(result))
+
           // select completed, do notifications from select
           {
             AutoRecursiveLock lock(mLock);
@@ -537,6 +556,7 @@ namespace openpeer
 
                 bool redoWakeupSocket = false;
                 if (FD_ISSET(mWakeUpSocket->getSocket(), &fdread)) {
+                  ZS_LOG_TRACE(log("curl thread told to wake up"))
                   --totalToProcess;
 
                   bool wouldBlock = false;
@@ -553,6 +573,8 @@ namespace openpeer
                 }
 
                 if (redoWakeupSocket) {
+                  ZS_LOG_TRACE(log("redo wakeup socket"))
+
                   mWakeUpSocket->close();
                   mWakeUpSocket.reset();
                   createWakeUpSocket();
@@ -570,6 +592,8 @@ namespace openpeer
 
                     if (found != mCurlMap.end()) {
                       HTTPQueryPtr &query = (*found).second;
+                      ZS_LOG_TRACE(log("curl multi select done") + ", query=" + string(query->getID()))
+
                       query->notifyComplete(msg->data.result);
 
                       HTTPQueryMap::iterator foundQuery = mQueries.find(query->getID());
@@ -846,6 +870,13 @@ namespace openpeer
           return;
         }
 
+        if (ZS_IS_LOGGING(Trace)) {
+          curl_easy_setopt(mCurl, CURLOPT_DEBUGFUNCTION, HTTPQuery::debug);
+          curl_easy_setopt(mCurl, CURLOPT_DEBUGDATA, (void *)((PTRNUMBER)mID));
+
+          curl_easy_setopt(mCurl, CURLOPT_VERBOSE, 1L);
+        }
+
         curl_easy_setopt(mCurl, CURLOPT_ERRORBUFFER, mErrorBuffer.BytePtr());
         curl_easy_setopt(mCurl, CURLOPT_URL, mURL.c_str());
         if (!mUserAgent.isEmpty()) {
@@ -1104,6 +1135,37 @@ namespace openpeer
         }
 
         return size*nmemb;
+      }
+
+      //-----------------------------------------------------------------------
+      int HTTP::HTTPQuery::debug(
+                                 CURL *handle,
+                                 curl_infotype type,
+                                 char *data,
+                                 size_t size,
+                                 void *userdata
+                                 )
+      {
+        const char *typeStr = "UNKNOWN";
+        switch (type) {
+          case CURLINFO_TEXT:         typeStr = "Text"; break;
+          case CURLINFO_HEADER_IN:    typeStr = "Header in"; break;
+          case CURLINFO_HEADER_OUT:   typeStr = "Header out"; break;
+          case CURLINFO_DATA_IN:      typeStr = "Data in"; break;
+          case CURLINFO_DATA_OUT:     typeStr = "Data out"; break;
+          case CURLINFO_SSL_DATA_IN:  typeStr = "SSL data in"; break;
+          case CURLINFO_SSL_DATA_OUT: typeStr = "SSL data out"; break;
+          case CURLINFO_END:          break;
+        }
+
+        SecureByteBlock raw(size);
+        memcpy(raw.BytePtr(), data, size);
+
+        PUID id = (PUID)((PTRNUMBER)userdata);
+
+        ZS_LOG_TRACE("HTTPQuery [" + string(id) + "] CURL debug, type=" + typeStr + ", data=" + (CSTR)raw.BytePtr())
+
+        return 0;
       }
     }
 

@@ -241,6 +241,14 @@ namespace openpeer
                                   void *userdata
                                   );
 
+          static int debug(
+                           CURL *handle,
+                           curl_infotype type,
+                           char *data,
+                           size_t size,
+                           void *userdata
+                           );
+
         protected:
           //-------------------------------------------------------------------
           #pragma mark

@@ -725,7 +725,7 @@ namespace openpeer
 
         if (!mSRVLookup) {
           ZS_LOG_DEBUG(log("step - creating DNS lookup"))
-          mSRVLookup = IDNS::lookupSRV(mThisWeak.lock(), mDomain, "_bootstrapper", "_tls");
+          mSRVLookup = IDNS::lookupSRV(mThisWeak.lock(), mDomain, "bootstrapper", "tls");
         }
 
         if (!mSRVLookup->isComplete()) {
