@@ -108,6 +108,8 @@ namespace openpeer
         virtual void associate(ServiceLockboxSessionPtr lockbox) = 0;
         virtual void killAssociation(ServiceLockboxSessionPtr lockbox) = 0;
 
+        virtual bool isAssociated() const = 0;
+
         virtual void notifyStateChanged() = 0;
 
         virtual bool isLoginComplete() const = 0;
@@ -272,6 +274,8 @@ namespace openpeer
 
         virtual void associate(ServiceLockboxSessionPtr lockbox);
         virtual void killAssociation(ServiceLockboxSessionPtr lockbox);
+
+        virtual bool isAssociated() const;
 
         virtual void notifyStateChanged();
 

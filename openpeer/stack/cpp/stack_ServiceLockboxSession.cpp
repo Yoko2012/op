@@ -1057,7 +1057,7 @@ namespace openpeer
         if (!mBootstrappedNetwork->forServices().isPreparationComplete()) {
           setState(SessionState_Pending);
 
-          ZS_LOG_DEBUG(log("waiting for preparation of lockbox bootstrapper to complete"))
+          ZS_LOG_TRACE(log("waiting for preparation of lockbox bootstrapper to complete"))
           return false;
         }
 
@@ -1065,7 +1065,7 @@ namespace openpeer
         String reason;
 
         if (mBootstrappedNetwork->forServices().wasSuccessful(&errorCode, &reason)) {
-          ZS_LOG_DEBUG(log("lockbox bootstrapper was successful"))
+          ZS_LOG_TRACE(log("lockbox bootstrapper was successful"))
           return true;
         }
 
@@ -1080,12 +1080,12 @@ namespace openpeer
       bool ServiceLockboxSession::stepGrantLock()
       {
         if (mObtainedLock) {
-          ZS_LOG_DEBUG(log("already informed browser window ready thus no need to make sure grant wait lock is obtained"))
+          ZS_LOG_TRACE(log("already informed browser window ready thus no need to make sure grant wait lock is obtained"))
           return true;
         }
 
         if (mGrantWait) {
-          ZS_LOG_DEBUG(log("grant wait lock is already obtained"))
+          ZS_LOG_TRACE(log("grant wait lock is already obtained"))
           return true;
         }
 
@@ -1099,7 +1099,7 @@ namespace openpeer
         mGrantWait = mGrantSession->forServices().obtainWaitToProceed(mThisWeak.lock());
 
         if (!mGrantWait) {
-          ZS_LOG_DEBUG(log("waiting to obtain grant wait lock"))
+          ZS_LOG_TRACE(log("waiting to obtain grant wait lock"))
           return false;
         }
 
@@ -1113,7 +1113,7 @@ namespace openpeer
       bool ServiceLockboxSession::stepIdentityLogin()
       {
         if (!mLoginIdentity) {
-          ZS_LOG_DEBUG(log("no identity being logged in"))
+          ZS_LOG_TRACE(log("no identity being logged in"))
           return true;
         }
 
@@ -1133,17 +1133,19 @@ namespace openpeer
           return false;
         }
 
-        ZS_LOG_DEBUG(log("associated login identity to lockbox"))
-
-        // require the association now to ensure the identity changes in state cause lockbox state changes too
-        mLoginIdentity->forLockbox().associate(mThisWeak.lock());
+        if (!mLoginIdentity->forLockbox().isAssociated()) {
+          // require the association now to ensure the identity changes in state cause lockbox state changes too
+          ZS_LOG_DEBUG(log("associated login identity to lockbox"))
+          
+          mLoginIdentity->forLockbox().associate(mThisWeak.lock());
+        }
 
         if (mLoginIdentity->forLockbox().isLoginComplete()) {
-          ZS_LOG_DEBUG(log("identity login is complete"))
+          ZS_LOG_TRACE(log("identity login is complete"))
           return true;
         }
 
-        ZS_LOG_DEBUG(log("waiting for login to complete"))
+        ZS_LOG_TRACE(log("waiting for login to complete"))
 
         setState(SessionState_Pending);
         return false;
@@ -1153,12 +1155,12 @@ namespace openpeer
       bool ServiceLockboxSession::stepLockboxAccess()
       {
         if (mLockboxAccessMonitor) {
-          ZS_LOG_DEBUG(log("waiting for lockbox access monitor to complete"))
+          ZS_LOG_TRACE(log("waiting for lockbox access monitor to complete"))
           return false;
         }
 
         if (mLockboxInfo.mAccessToken.hasData()) {
-          ZS_LOG_DEBUG(log("already have a lockbox access key"))
+          ZS_LOG_TRACE(log("already have a lockbox access key"))
           return true;
         }
 
@@ -1232,7 +1234,7 @@ namespace openpeer
       bool ServiceLockboxSession::stepGrantLockClear()
       {
         if (!mGrantWait) {
-          ZS_LOG_DEBUG(log("wait already cleared"))
+          ZS_LOG_TRACE(log("wait already cleared"))
           return true;
         }
 
@@ -1247,17 +1249,17 @@ namespace openpeer
       bool ServiceLockboxSession::stepGrantChallenge()
       {
         if (mLockboxNamespaceGrantChallengeValidateMonitor) {
-          ZS_LOG_DEBUG(log("waiting for lockbox namespace grant challenge validate monitor to complete"))
+          ZS_LOG_TRACE(log("waiting for lockbox namespace grant challenge validate monitor to complete"))
           return false;
         }
 
         if (!mGrantQuery) {
-          ZS_LOG_DEBUG(log("no grant challenge query thus continuing..."))
+          ZS_LOG_TRACE(log("no grant challenge query thus continuing..."))
           return true;
         }
 
         if (!mGrantQuery->isComplete()) {
-          ZS_LOG_DEBUG(log("waiting for the grant query to complete"))
+          ZS_LOG_TRACE(log("waiting for the grant query to complete"))
           return false;
         }
 
@@ -1305,12 +1307,12 @@ namespace openpeer
       bool ServiceLockboxSession::stepContentGet()
       {
         if (mLockboxContentGetMonitor) {
-          ZS_LOG_DEBUG(log("waiting for content get to complete"))
+          ZS_LOG_TRACE(log("waiting for content get to complete"))
           return false;
         }
 
         if (mContent.size() > 0) {
-          ZS_LOG_DEBUG(log("content has been obtained already"))
+          ZS_LOG_TRACE(log("content has been obtained already"))
           return true;
         }
 
@@ -1335,13 +1337,13 @@ namespace openpeer
       bool ServiceLockboxSession::stepPreparePeerFiles()
       {
         if (mPeerFiles) {
-          ZS_LOG_DEBUG(log("peer files already created/loaded"))
+          ZS_LOG_TRACE(log("peer files already created/loaded"))
           return true;
         }
 
         if (mSaltQuery) {
           if (!mSaltQuery->isComplete()) {
-            ZS_LOG_DEBUG(log("waiting for salt query to complete"))
+            ZS_LOG_TRACE(log("waiting for salt query to complete"))
             return false;
           }
 
@@ -1464,12 +1466,12 @@ namespace openpeer
       bool ServiceLockboxSession::stepServicesGet()
       {
         if (mServicesByType.size() > 0) {
-          ZS_LOG_DEBUG(log("already download services"))
+          ZS_LOG_TRACE(log("already download services"))
           return true;
         }
 
         if (mPeerServicesGetMonitor) {
-          ZS_LOG_DEBUG(log("waiting for services get to complete"))
+          ZS_LOG_TRACE(log("waiting for services get to complete"))
           return false;
         }
 
@@ -1491,12 +1493,12 @@ namespace openpeer
       bool ServiceLockboxSession::stepLoginIdentityBecomeAssociated()
       {
         if (!mLoginIdentity) {
-          ZS_LOG_DEBUG(log("did not login with a login identity (thus no need to force it to associate)"))
+          ZS_LOG_TRACE(log("did not login with a login identity (thus no need to force it to associate)"))
           return true;
         }
 
         if (mLoginIdentitySetToBecomeAssociated) {
-          ZS_LOG_DEBUG(log("login identity is already set to become associated"))
+          ZS_LOG_TRACE(log("login identity is already set to become associated"))
           return true;
         }
 
@@ -1532,7 +1534,7 @@ namespace openpeer
       bool ServiceLockboxSession::stepConvertFromServerToRealIdentities()
       {
         if (mServerIdentities.size() < 1) {
-          ZS_LOG_DEBUG(log("no server identities that need to be converted to identities"))
+          ZS_LOG_TRACE(log("no server identities that need to be converted to identities"))
           return true;
         }
 
@@ -1623,7 +1625,7 @@ namespace openpeer
       bool ServiceLockboxSession::stepPruneDuplicatePendingIdentities()
       {
         if (mPendingUpdateIdentities.size() < 1) {
-          ZS_LOG_DEBUG(log("no identities pending update"))
+          ZS_LOG_TRACE(log("no identities pending update"))
           return true;
         }
 
@@ -1658,7 +1660,7 @@ namespace openpeer
       //-----------------------------------------------------------------------
       bool ServiceLockboxSession::stepPruneShutdownIdentities()
       {
-        ZS_LOG_DEBUG(log("pruning shutdown identities"))
+        ZS_LOG_TRACE(log("pruning shutdown identities"))
 
         for (ServiceIdentitySessionMap::iterator pendingUpdateIter = mPendingUpdateIdentities.begin(); pendingUpdateIter != mPendingUpdateIdentities.end();)
         {
@@ -1673,7 +1675,7 @@ namespace openpeer
           mPendingUpdateIdentities.erase(pendingUpdateCurrentIter);
         }
 
-        ZS_LOG_DEBUG(log("pruning of shutdown identities complete"))
+        ZS_LOG_TRACE(log("pruning of shutdown identities complete"))
 
         return true;
       }
@@ -1683,13 +1685,13 @@ namespace openpeer
       {
         if ((mLockboxIdentitiesUpdateMonitor) ||
             (mLockboxContentSetMonitor)) {
-          ZS_LOG_DEBUG(log("waiting for identities association or content set to complete before attempting to associate identities"))
+          ZS_LOG_TRACE(log("waiting for identities association or content set to complete before attempting to associate identities"))
           return false;
         }
 
         if ((mPendingUpdateIdentities.size() < 1) &&
             (mPendingRemoveIdentities.size() < 1)) {
-          ZS_LOG_DEBUG(log("no identities are pending addition or removal"))
+          ZS_LOG_TRACE(log("no identities are pending addition or removal"))
           return true;
         }
 
@@ -1807,7 +1809,7 @@ namespace openpeer
             updateInfos.push_back(info);
           }
 
-          if ((removeInfos.size() > 0) &&
+          if ((removeInfos.size() > 0) ||
               (updateInfos.size() > 0)) {
 
             ZS_LOG_DEBUG(log("sending update identities request"))
