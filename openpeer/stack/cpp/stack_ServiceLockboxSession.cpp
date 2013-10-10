@@ -1372,7 +1372,7 @@ namespace openpeer
           if (doc) {
             mPeerFiles = IPeerFiles::loadFromElement(privatePeerSecretStr, doc->getFirstChildElement());
             if (!mPeerFiles) {
-              ZS_LOG_WARNING(Detail, log("peer files failed to load (will generate new peer files)"))
+              ZS_LOG_ERROR(Detail, log("peer files failed to load (will generate new peer files) - recoverable but this should not happen"))
             }
           }
         }
