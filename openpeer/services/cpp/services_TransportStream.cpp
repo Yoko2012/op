@@ -147,6 +147,9 @@ namespace openpeer
       void TransportStream::cancel()
       {
         AutoRecursiveLock lock(getLock());
+
+        ZS_LOG_DEBUG(log("cancel called") + getDebugValueString())
+
         get(mShutdown) = true;
 
         mWriterSubscriptions.clear();

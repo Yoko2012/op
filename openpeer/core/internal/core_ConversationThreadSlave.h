@@ -219,7 +219,7 @@ namespace openpeer
         #pragma mark ConversationThreadSlave => IWakeDelegate
         #pragma mark
 
-        virtual void onWake() {step();}
+        virtual void onWake();
 
         //---------------------------------------------------------------------
         #pragma mark

@@ -908,7 +908,7 @@ namespace openpeer
       bool FinderConnection::stepCleanRemoval()
       {
         if (mRemoveChannels.size() < 1) {
-          ZS_LOG_DEBUG(log("no channels to remove"))
+          ZS_LOG_TRACE(log("no channels to remove"))
           return true;
         }
 
@@ -939,7 +939,7 @@ namespace openpeer
           // scope: remove from incoming channels
           {
             ChannelMap::iterator found = mIncomingChannels.find(channelNumber);
-            if (found != mPendingMapRequest.end()) {
+            if (found != mIncomingChannels.end()) {
               ZS_LOG_DEBUG(log("removing channel from incoming channels"))
               mIncomingChannels.erase(found);
             }
@@ -975,6 +975,8 @@ namespace openpeer
           }
 
           if (!foundInPendingMapRequest) {
+            ZS_LOG_DEBUG(log("will notify channel is closed") + ", channel=" + string(channelNumber))
+
             // notify remote party of channel closure
             ChannelHeaderPtr header(new ChannelHeader);
             header->mChannelID = channelNumber;
@@ -985,10 +987,11 @@ namespace openpeer
             mWireSendStream->write(buffer, header);
           }
 
-          ZS_LOG_DEBUG(log("remove channels completed"))
-
-          mRemoveChannels.clear();
         }
+
+        mRemoveChannels.clear();
+
+        ZS_LOG_TRACE(log("remove channels completed"))
 
         return true;
       }
@@ -1002,12 +1005,12 @@ namespace openpeer
         {
           case ITCPMessaging::SessionState_Pending:
           {
-            ZS_LOG_DEBUG(log("waiting for TCP messaging to connect"))
+            ZS_LOG_TRACE(log("waiting for TCP messaging to connect"))
             return false;
           }
           case ITCPMessaging::SessionState_Connected:
           {
-            ZS_LOG_DEBUG(log("TCP messaging connected"))
+            ZS_LOG_TRACE(log("TCP messaging connected"))
             break;
           }
           case ITCPMessaging::SessionState_ShuttingDown:
@@ -1033,7 +1036,7 @@ namespace openpeer
       bool FinderConnection::stepMasterChannel()
       {
         if (isFinderRelayConnection()) {
-          ZS_LOG_DEBUG(log("finder relay connections do not have a master channel"))
+          ZS_LOG_TRACE(log("finder relay connections do not have a master channel"))
           return true;
         }
 
@@ -1052,7 +1055,7 @@ namespace openpeer
 
         switch (channel->getState(&error, &reason)) {
           case IFinderConnectionRelayChannel::SessionState_Pending:   {
-            ZS_LOG_DEBUG(log("waiting for master channel to connect"))
+            ZS_LOG_TRACE(log("waiting for master channel to connect"))
             return false;
           }
           case IFinderConnectionRelayChannel::SessionState_Connected: break;
@@ -1071,11 +1074,11 @@ namespace openpeer
       bool FinderConnection::stepChannelMapRequest()
       {
         if (mMapRequestChannelMonitor) {
-          ZS_LOG_DEBUG(log("pending channel map request is already outstanding"))
+          ZS_LOG_TRACE(log("pending channel map request is already outstanding"))
           return true;
         }
         if (mPendingMapRequest.size() < 1) {
-          ZS_LOG_DEBUG(log("no pending channels needing to be notified"))
+          ZS_LOG_TRACE(log("no pending channels needing to be notified"))
           return true;
         }
 
