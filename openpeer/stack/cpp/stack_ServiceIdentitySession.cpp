@@ -1204,7 +1204,7 @@ namespace openpeer
         mIdentityAccessRolodexCredentialsGetMonitor->cancel();
         mIdentityAccessRolodexCredentialsGetMonitor.reset();
 
-        mRolodexInfo = result->rolodexInfo();
+        mRolodexInfo.mergeFrom(result->rolodexInfo(), true);
 
         if (mRolodexInfo.mServerToken.isEmpty()) {
           setError(IHTTP::HTTPStatusCode_MethodFailure, "rolodex credentials gets did not return a server token");
@@ -1370,7 +1370,7 @@ namespace openpeer
         mRolodexAccessMonitor->cancel();
         mRolodexAccessMonitor.reset();
 
-        mRolodexInfo.mergeFrom(result->rolodexInfo());
+        mRolodexInfo.mergeFrom(result->rolodexInfo(), true);
 
         if ((mRolodexInfo.mAccessToken.isEmpty()) ||
             (mRolodexInfo.mAccessSecret.isEmpty()))
