@@ -1789,24 +1789,24 @@ namespace openpeer
 
           ElementPtr avatarsEl = elem->findFirstChildElement("avatars");
           if (avatarsEl) {
-            ElementPtr avatarEl = elem->findFirstChildElement("avatar");
+            ElementPtr avatarEl = avatarsEl->findFirstChildElement("avatar");
             while (avatarEl) {
               IdentityInfo::Avatar avatar;
-              avatar.mName = IMessageHelper::getElementTextAndDecode(elem->findFirstChildElement("name"));
-              avatar.mURL = IMessageHelper::getElementTextAndDecode(elem->findFirstChildElement("url"));
+              avatar.mName = IMessageHelper::getElementTextAndDecode(avatarEl->findFirstChildElement("name"));
+              avatar.mURL = IMessageHelper::getElementTextAndDecode(avatarEl->findFirstChildElement("url"));
               try {
-                avatar.mWidth = Numeric<int>(IMessageHelper::getElementTextAndDecode(elem->findFirstChildElement("width")));
+                avatar.mWidth = Numeric<int>(IMessageHelper::getElementTextAndDecode(avatarEl->findFirstChildElement("width")));
               } catch(Numeric<int>::ValueOutOfRange &) {
               }
               try {
-                avatar.mHeight = Numeric<int>(IMessageHelper::getElementTextAndDecode(elem->findFirstChildElement("height")));
+                avatar.mHeight = Numeric<int>(IMessageHelper::getElementTextAndDecode(avatarEl->findFirstChildElement("height")));
               } catch(Numeric<int>::ValueOutOfRange &) {
               }
 
               if (avatar.hasData()) {
                 info.mAvatars.push_back(avatar);
               }
-              avatarEl = elem->findNextSiblingElement("avatar");
+              avatarEl = avatarEl->findNextSiblingElement("avatar");
             }
           }
 

@@ -2776,8 +2776,6 @@ namespace openpeer
           mLastRetryFinderAfterDuration = Seconds(OPENPEER_STACK_ACCOUNT_FINDER_MAX_RETRY_AFTER_TIME_IN_SECONDS);
         }
 
-        // HERE - all peer locations should be told the finder relay has been closed
-
         for (PeerInfoMap::iterator iter = mPeerInfos.begin(); iter != mPeerInfos.end(); ++iter)
         {
           PeerInfoPtr &peerInfo = (*iter).second;
@@ -2904,6 +2902,8 @@ namespace openpeer
       //-----------------------------------------------------------------------
       void Account::RelayInfo::cancel()
       {
+        ZS_LOG_TRACE("Account::RelayInfo [" + string(mID) + "] cancel called")
+
         if (mRelayChannelSubscription) {
           mRelayChannelSubscription->cancel();
           mRelayChannelSubscription.reset();
