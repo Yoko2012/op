@@ -376,7 +376,10 @@ namespace openpeer
         mThisWeak.reset();
 
         mSubscriptions.clear();
-        mDefaultSubscription->cancel();
+        if (mDefaultSubscription) {
+          mDefaultSubscription->cancel();
+          mDefaultSubscription.reset();
+        }
 
         FinderConnectionManagerPtr outer = mOuter.lock();
         if (outer) {
